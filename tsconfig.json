@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "allowJs": true,
+    "paths": {
+      // Iliad
+      "@iliad/*": ["src/@iliad/*"],
+      "@iliad/hooks/*": ["src/@iliad/utils/hooks/*"],
+      "@iliad/functions/*": ["src/@iliad/functions/hooks/*"]
+      // Atlas
+      // "@atlas/*": ["@atlas/*"]
+    }
+  },
+  "include": [
+    "src",
+    "tests",
+    "custom.d.ts",
+
+    // Type Declarations
+    "src/@types/**/*.d.ts",
+    "src/@types/**/*.ts",
+    "src/@types/**/*",
+    "src/@types/*.d.ts",
+    "src/@types/*.ts",
+    "src/@types/*",
+
+    // Iliad Types
+    "src/@iliad/@types/**/*.d.ts",
+    "src/@iliad/@types/**/*.ts",
+    "src/@iliad/@types/**/*",
+    "src/@iliad/@types/*.d.ts",
+    "src/@iliad/@types/*.ts",
+    "src/@iliad/@types/*",
+
+    // Atlas Types
+    "@atlas/design-system/@types/**/*.d.ts",
+    "@atlas/design-system/@types/**/*.ts",
+    "@atlas/design-system/@types/**/*",
+    "@atlas/design-system/@types/*.d.ts",
+    "@atlas/design-system/@types/*.ts",
+    "@atlas/design-system/@types/*"
+  ],
+  "exclude": ["node_modules"]
+}
