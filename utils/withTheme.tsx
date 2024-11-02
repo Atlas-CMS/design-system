@@ -1,7 +1,7 @@
-import { useTheme } from 'styled-components';
-import React from 'react';
+import { useTheme } from "styled-components";
+import React from "react";
 
-type WithTheme<P> = P & { theme: import('styled-components').DefaultTheme };
+type WithTheme<P> = P & { theme: import("styled-components").DefaultTheme };
 // With theme higher order component
 export const withTheme =
   <P extends object>(Component: React.ComponentType<WithTheme<P>>) =>

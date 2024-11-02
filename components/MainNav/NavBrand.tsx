@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { NavLink } from "react-router-dom";
+import styled from "styled-components";
 
-import { useMainNav } from './MainNavContext';
-import { Box } from '../Box';
-import { Flex } from '../Flex';
-import { Typography } from '../Typography';
-import { VisuallyHidden } from '../VisuallyHidden';
+import { useMainNav } from "./MainNavContext";
+import { Box } from "../Box";
+import { Flex } from "../Flex";
+import { Typography } from "../Typography";
+import { VisuallyHidden } from "../VisuallyHidden";
 
 export interface NavBrandProps {
   icon?: React.ReactNode;
@@ -21,17 +21,25 @@ const BrandIconWrapper = styled.div<{ condensed?: boolean }>`
   img {
     border-radius: ${({ theme }) => theme.borderRadius};
     object-fit: contain;
-    height: ${({ condensed }) => (condensed ? `${40 / 16}rem` : `${32 / 16}rem`)};
-    width: ${({ condensed }) => (condensed ? `${40 / 16}rem` : `${32 / 16}rem`)};
+    height: ${({ condensed }) =>
+      condensed ? `${40 / 16}rem` : `${32 / 16}rem`};
+    width: ${({ condensed }) =>
+      condensed ? `${40 / 16}rem` : `${32 / 16}rem`};
   }
 `;
 
+// @ts-ignore
 const NavLinkWrapper = styled(NavLink)`
   text-decoration: unset;
   color: inherit;
 `;
 
-export const NavBrand = ({ workplace, title, icon, to = '/' }: NavBrandProps) => {
+export const NavBrand = ({
+  workplace,
+  title,
+  icon,
+  to = "/",
+}: NavBrandProps) => {
   const condensed = useMainNav();
 
   if (condensed) {
@@ -39,8 +47,12 @@ export const NavBrand = ({ workplace, title, icon, to = '/' }: NavBrandProps) =>
       <Box paddingLeft={3} paddingRight={3} paddingTop={4} paddingBottom={4}>
         {/* @ts-ignore */}
         <BrandIconWrapper condensed>
+          {/* @ts-ignore */}
           <NavLink to={to}>
-            {icon}
+            <>
+              {/* @ts-ignore */}
+              {icon}
+            </>
             <VisuallyHidden>
               <span>{title}</span>
               <span>{workplace}</span>
@@ -54,6 +66,7 @@ export const NavBrand = ({ workplace, title, icon, to = '/' }: NavBrandProps) =>
   return (
     <Box paddingLeft={3} paddingRight={3} paddingTop={4} paddingBottom={4}>
       <Flex>
+        {/* @ts-ignore */}
         <BrandIconWrapper as={NavLink} to={to} aria-hidden tabIndex={-1}>
           {icon}
         </BrandIconWrapper>

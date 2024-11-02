@@ -1,8 +1,8 @@
-import { cloneDeep, assignWith, merge } from 'lodash';
-import { DefaultTheme } from 'styled-components';
+import { cloneDeep, assignWith, merge } from "lodash";
+import { DefaultTheme } from "styled-components";
 
-import { lightTheme } from './lightTheme';
-import { isObject } from '../helpers/objects';
+import { lightTheme } from "./lightTheme";
+import { isObject } from "../helpers/objects";
 
 const generateError = (customMessage: string) => `
 ${customMessage}
@@ -15,14 +15,17 @@ import { lightTheme, extendTheme } from '@atlas/design-system';
 const myCustomTheme = extendTheme(lightTheme, {
     ${Object.keys(lightTheme)
       .map((key) => `${key}: /* put the overrides for the ${key} key */,`)
-      .join('\n')}
+      .join("\n")}
 })
 `;
 
-export const extendTheme = (theme: DefaultTheme | null, overrides: object | null) => {
+export const extendTheme = (
+  theme: DefaultTheme | null,
+  overrides: object | null
+) => {
   if (!isObject(theme)) {
     const error = generateError(
-      'The first argument should be an object and corresponds to the theme you want to extend.'
+      "The first argument should be an object and corresponds to the theme you want to extend."
     );
 
     throw new Error(error);
@@ -30,7 +33,7 @@ export const extendTheme = (theme: DefaultTheme | null, overrides: object | null
 
   if (!isObject(overrides)) {
     const error = generateError(
-      'The second argument should be an object and corresponds to the keys of the theme you want to override.'
+      "The second argument should be an object and corresponds to the keys of the theme you want to override."
     );
 
     throw new Error(error);

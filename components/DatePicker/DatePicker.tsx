@@ -1,7 +1,13 @@
 /* eslint-disable react/no-unused-prop-types */
-import * as React from 'react';
+import * as React from "react";
 
-import { useFloating, flip, shift, offset, autoUpdate } from '@floating-ui/react-dom';
+import {
+  useFloating,
+  flip,
+  shift,
+  offset,
+  autoUpdate,
+} from "@floating-ui/react-dom";
 import {
   startOfWeek,
   today,
@@ -15,32 +21,32 @@ import {
   maxDate as maxDateFn,
   parseAbsolute,
   getLocalTimeZone,
-} from '@internationalized/date';
-import { useFocusGuards } from '@radix-ui/react-focus-guards';
-import { FocusScope } from '@radix-ui/react-focus-scope';
-import { Calendar, Cross } from '@strapi/icons';
-import { composeEventHandlers } from '@strapi/ui-primitives';
-import { createPortal } from 'react-dom';
-import { RemoveScroll } from 'react-remove-scroll';
-import styled, { DefaultTheme } from 'styled-components';
+} from "@internationalized/date";
+import { useFocusGuards } from "@radix-ui/react-focus-guards";
+import { FocusScope } from "@radix-ui/react-focus-scope";
+import { Calendar, Cross } from "@strapi/icons";
+import { composeEventHandlers } from "@strapi/ui-primitives";
+import { createPortal } from "react-dom";
+import { RemoveScroll } from "react-remove-scroll";
+import styled, { DefaultTheme } from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { useDesignSystem } from '../DesignSystemProvider';
-import { DismissibleLayer } from '../DismissibleLayer';
-import * as Field from '../Field';
-import { FieldProps } from '../Field';
-import { Flex, FlexProps } from '../Flex';
-import { createContext } from '../helpers/context';
-import { once } from '../helpers/deprecations';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { useControllableState } from '../hooks/useControllableState';
-import { useDateFormatter } from '../hooks/useDateFormatter';
-import { useId } from '../hooks/useId';
-import { PopoverPrimitives } from '../Popover';
-import { Portal } from '../Portal';
-import { SingleSelectInput, SingleSelectOption } from '../Select/SingleSelect';
-import { getThemeSize, inputFocusStyle } from '../themes';
-import { Typography } from '../Typography';
+import { Box, BoxProps } from "../Box";
+import { useDesignSystem } from "../DesignSystemProvider";
+import { DismissibleLayer } from "../DismissibleLayer";
+import * as Field from "../Field";
+import { FieldProps } from "../Field";
+import { Flex, FlexProps } from "../Flex";
+import { createContext } from "../helpers/context";
+import { once } from "../helpers/deprecations";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { useControllableState } from "../hooks/useControllableState";
+import { useDateFormatter } from "../hooks/useDateFormatter";
+import { useId } from "../hooks/useId";
+import { PopoverPrimitives } from "../Popover";
+import { Portal } from "../Portal";
+import { SingleSelectInput, SingleSelectOption } from "../Select/SingleSelect";
+import { getThemeSize, inputFocusStyle } from "../themes";
+import { Typography } from "../Typography";
 
 const DEFAULT_PAST_RANGE = 200;
 const DEFAULT_FUTURE_RANGE = 15;
@@ -80,15 +86,15 @@ interface DatePickerContextValue {
 }
 
 const [DatePickerProvider, useDatePickerContext] =
-  createContext<DatePickerContextValue>('DatePicker');
+  createContext<DatePickerContextValue>("DatePicker");
 
 interface DatePickerInputProps
-  extends Pick<FieldProps, 'required' | 'id' | 'error'>,
-    Pick<Partial<DatePickerContextValue>, 'disabled' | 'locale'>,
-    Pick<TextInputProps, 'placeholder'>,
-    Pick<CalendarProps, 'monthSelectLabel' | 'yearSelectLabel'>,
-    Pick<TriggerProps, 'size'>,
-    Omit<TextInputProps, 'size' | 'onChange' | 'value' | 'id' | 'ref'> {
+  extends Pick<FieldProps, "required" | "id" | "error">,
+    Pick<Partial<DatePickerContextValue>, "disabled" | "locale">,
+    Pick<TextInputProps, "placeholder">,
+    Pick<CalendarProps, "monthSelectLabel" | "yearSelectLabel">,
+    Pick<TriggerProps, "size">,
+    Omit<TextInputProps, "size" | "onChange" | "value" | "id" | "ref"> {
   calendarLabel?: string;
   className?: string;
   /*
@@ -117,11 +123,16 @@ interface DatePickerInputProps
    * @deprecated This is no longer used.
    */
   selectedDateLabel?: (date: string) => string;
-  onClear?: (e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => void;
+  onClear?: (
+    e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>
+  ) => void;
   clearLabel?: string;
 }
 
-const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerInputProps>(
+const DatePickerInput = React.forwardRef<
+  DatePickerTextInputElement,
+  DatePickerInputProps
+>(
   (
     {
       /**
@@ -133,10 +144,10 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
       locale: defaultLocale,
       maxDate,
       minDate,
-      monthSelectLabel = 'Month',
+      monthSelectLabel = "Month",
       onChange,
       selectedDate,
-      yearSelectLabel = 'Year',
+      yearSelectLabel = "Year",
       /**
        * Combobox props
        */
@@ -146,7 +157,7 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
       placeholder,
       required = false,
       onClear,
-      clearLabel = 'Clear',
+      clearLabel = "Clear",
       size,
       /**
        * @preserve
@@ -164,25 +175,32 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
   ) => {
     const timeZone = getLocalTimeZone();
 
-    const designContext = useDesignSystem('DatePicker');
+    const designContext = useDesignSystem("DatePicker");
 
     const locale = defaultLocale ?? designContext.locale;
 
     const formatter = useDateFormatter(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
 
     const [open, setOpen] = React.useState(false);
-    const [trigger, setTrigger] = React.useState<DatePickerTriggerElement | null>(null);
-    const [textInput, setTextInput] = React.useState<DatePickerTextInputElement | null>(null);
-    const [content, setContent] = React.useState<DatePickerContentElement | null>(null);
+    const [trigger, setTrigger] =
+      React.useState<DatePickerTriggerElement | null>(null);
+    const [textInput, setTextInput] =
+      React.useState<DatePickerTextInputElement | null>(null);
+    const [content, setContent] =
+      React.useState<DatePickerContentElement | null>(null);
     const [textValue, setTextValue] = React.useState<string | undefined>();
 
     const [value, setValue] = useControllableState<CalendarDate | undefined>({
-      defaultProp: initialDate ? convertUTCDateToCalendarDate(initialDate) : undefined,
-      prop: selectedDate ? convertUTCDateToCalendarDate(selectedDate) : undefined,
+      defaultProp: initialDate
+        ? convertUTCDateToCalendarDate(initialDate)
+        : undefined,
+      prop: selectedDate
+        ? convertUTCDateToCalendarDate(selectedDate)
+        : undefined,
       onChange(date) {
         if (onChange) {
           onChange(date?.toDate(timeZone));
@@ -191,14 +209,20 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
     });
 
     const [actualMinDate, actualMaxDate] = React.useMemo(() => {
-      const now = initialDate ? convertUTCDateToCalendarDate(initialDate) : today('UTC');
+      const now = initialDate
+        ? convertUTCDateToCalendarDate(initialDate)
+        : today("UTC");
       const actualMinDate = minDate
         ? convertUTCDateToCalendarDate(minDate)
         : now.set({ day: 1, month: 1, year: now.year - DEFAULT_PAST_RANGE });
 
       let actualMaxDate = maxDate
         ? convertUTCDateToCalendarDate(maxDate)
-        : now.set({ day: 31, month: 12, year: now.year + DEFAULT_FUTURE_RANGE });
+        : now.set({
+            day: 31,
+            month: 12,
+            year: now.year + DEFAULT_FUTURE_RANGE,
+          });
 
       if (actualMaxDate.compare(actualMinDate) < 0) {
         actualMaxDate = actualMinDate.set({
@@ -231,7 +255,7 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
       e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>
     ) => {
       if (onClear && !disabled) {
-        setTextValue('');
+        setTextValue("");
         setValue(undefined);
 
         onClear(e);
@@ -256,7 +280,7 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
         setTextValue(formatter.format(date.toDate(timeZone)));
         setCalendarDate(date);
       } else {
-        setTextValue('');
+        setTextValue("");
       }
     }, [selectedDate, formatter, timeZone]);
 
@@ -294,7 +318,11 @@ const DatePickerInput = React.forwardRef<DatePickerTextInputElement, DatePickerI
         trigger={trigger}
         value={value}
       >
-        <DatePickerTrigger className={className} size={size} hasError={Boolean(error)}>
+        <DatePickerTrigger
+          className={className}
+          size={size}
+          hasError={Boolean(error)}
+        >
           <StyledCalendarIcon aria-hidden />
           <DatePickerTextInput
             ref={ref}
@@ -341,13 +369,16 @@ const makeInitialCalendarDate: (args: {
   minDate: CalendarDate;
   maxDate: CalendarDate;
 }) => CalendarDate = ({ currentValue, minDate, maxDate }) => {
-  const now = today('UTC');
+  const now = today("UTC");
 
   if (currentValue) {
     return currentValue;
   }
 
-  if (minDateFn(minDate, now) === minDate && maxDateFn(maxDate, now) === maxDate) {
+  if (
+    minDateFn(minDate, now) === minDate &&
+    maxDateFn(maxDate, now) === maxDate
+  ) {
     return now;
   }
 
@@ -366,7 +397,7 @@ const makeInitialCalendarDate: (args: {
  * DatePickerTrigger
  * -----------------------------------------------------------------------------------------------*/
 
-const DATE_PICKER_TRIGGER_NAME = 'DatePickerTrigger';
+const DATE_PICKER_TRIGGER_NAME = "DatePickerTrigger";
 
 type DatePickerTriggerElement = HTMLDivElement;
 
@@ -375,60 +406,67 @@ interface TriggerProps extends FlexProps {
   /**
    * @default "M"
    */
-  size?: 'S' | 'M';
+  size?: "S" | "M";
 }
 
-const DatePickerTrigger = React.forwardRef<DatePickerTriggerElement, TriggerProps>(
-  ({ hasError, size = 'M', ...restProps }, forwardedRef) => {
-    const context = useDatePickerContext(DATE_PICKER_TRIGGER_NAME);
+const DatePickerTrigger = React.forwardRef<
+  DatePickerTriggerElement,
+  TriggerProps
+>(({ hasError, size = "M", ...restProps }, forwardedRef) => {
+  const context = useDatePickerContext(DATE_PICKER_TRIGGER_NAME);
 
-    const composedRefs = useComposedRefs(forwardedRef, (node) => context.onTriggerChange(node));
+  const composedRefs = useComposedRefs(forwardedRef, (node) =>
+    context.onTriggerChange(node)
+  );
 
-    const handleOpenChange = () => {
-      if (!context.disabled) {
-        context.onOpenChange(true);
-      }
-    };
+  const handleOpenChange = () => {
+    if (!context.disabled) {
+      context.onOpenChange(true);
+    }
+  };
 
-    return (
-      <FocusScope
-        asChild
-        // we make sure we're not trapping once it's been closed
-        // (closed !== unmounted when animating out)
-        trapped={context.open}
-        onMountAutoFocus={(event) => {
-          // we prevent open autofocus because we manually focus the selected item
-          event.preventDefault();
-        }}
-        onUnmountAutoFocus={(event) => {
-          /**
-           * In firefox there's a some kind of selection happening after
-           * unmounting all of this, so we make sure we clear that.
-           */
-          document.getSelection()?.empty();
-          event.preventDefault();
-        }}
-      >
-        <TriggerElement
-          ref={composedRefs}
-          $hasError={hasError}
-          $size={size}
-          {...restProps}
-          paddingLeft={3}
-          paddingRight={3}
-          hasRadius
-          gap={3}
-          overflow="hidden"
-          background={context.disabled ? 'neutral150' : 'neutral0'}
-          onClick={composeEventHandlers(restProps.onClick, () => {
-            // Whilst browsers generally have no issue focusing the trigger when clicking
-            // on a label, Safari seems to struggle with the fact that there's no `onClick`.
-            // We force `focus` in this case. Note: this doesn't create any other side-effect
-            // because we are preventing default in `onPointerDown` so effectively
-            // this only runs for a label "click"
-            context.textInput?.focus();
-          })}
-          onPointerDown={composeEventHandlers(restProps.onPointerDown, (event) => {
+  return (
+    // @ts-ignore
+    <FocusScope
+      asChild
+      // we make sure we're not trapping once it's been closed
+      // (closed !== unmounted when animating out)
+      trapped={context.open}
+      onMountAutoFocus={(event) => {
+        // we prevent open autofocus because we manually focus the selected item
+        event.preventDefault();
+      }}
+      onUnmountAutoFocus={(event) => {
+        /**
+         * In firefox there's a some kind of selection happening after
+         * unmounting all of this, so we make sure we clear that.
+         */
+        document.getSelection()?.empty();
+        event.preventDefault();
+      }}
+    >
+      <TriggerElement
+        ref={composedRefs}
+        $hasError={hasError}
+        $size={size}
+        {...restProps}
+        paddingLeft={3}
+        paddingRight={3}
+        hasRadius
+        gap={3}
+        overflow="hidden"
+        background={context.disabled ? "neutral150" : "neutral0"}
+        onClick={composeEventHandlers(restProps.onClick, () => {
+          // Whilst browsers generally have no issue focusing the trigger when clicking
+          // on a label, Safari seems to struggle with the fact that there's no `onClick`.
+          // We force `focus` in this case. Note: this doesn't create any other side-effect
+          // because we are preventing default in `onPointerDown` so effectively
+          // this only runs for a label "click"
+          context.textInput?.focus();
+        })}
+        onPointerDown={composeEventHandlers(
+          restProps.onPointerDown,
+          (event) => {
             // prevent implicit pointer capture
             // https://www.w3.org/TR/pointerevents3/#implicit-pointer-capture
             const target = event.target as HTMLElement;
@@ -441,7 +479,8 @@ const DatePickerTrigger = React.forwardRef<DatePickerTriggerElement, TriggerProp
              * This has been added to allow events inside the trigger to be easily fired
              * e.g. the clear button or removing a tag
              */
-            const buttonTarg = target.closest('button') ?? target.closest('div');
+            const buttonTarg =
+              target.closest("button") ?? target.closest("div");
 
             if (buttonTarg !== event.currentTarget) {
               return;
@@ -456,17 +495,19 @@ const DatePickerTrigger = React.forwardRef<DatePickerTriggerElement, TriggerProp
                */
               context.textInput?.focus();
             }
-          })}
-        />
-      </FocusScope>
-    );
-  }
-);
+          }
+        )}
+      />
+    </FocusScope>
+  );
+});
 
-const TriggerElement = styled(Flex)<{ $hasError: boolean; $size: 'S' | 'M' }>`
+const TriggerElement = styled(Flex)<{ $hasError: boolean; $size: "S" | "M" }>`
   border: 1px solid
-    ${({ theme, $hasError }) => ($hasError ? theme.colors.danger600 : theme.colors.neutral200)};
-  min-height: ${({ theme, $size }) => getThemeSize('input')({ theme, size: $size })};
+    ${({ theme, $hasError }) =>
+      $hasError ? theme.colors.danger600 : theme.colors.neutral200};
+  min-height: ${({ theme, $size }) =>
+    getThemeSize("input")({ theme, size: $size })};
 
   &[data-disabled] {
     color: ${({ theme }) => theme.colors.neutral600};
@@ -479,7 +520,8 @@ const TriggerElement = styled(Flex)<{ $hasError: boolean; $size: 'S' | 'M' }>`
     outline: none;
   }
 
-  ${({ theme, $hasError }) => inputFocusStyle()({ theme, hasError: $hasError })};
+  ${({ theme, $hasError }) =>
+    inputFocusStyle()({ theme, hasError: $hasError })};
 `;
 
 const IconBox = styled(Box)`
@@ -505,279 +547,312 @@ const StyledCalendarIcon = styled(Calendar)`
  *  DatePickerTextInput
  * -----------------------------------------------------------------------------------------------*/
 
-const DATE_PICKER_TEXT_INPUT_NAME = 'DatePickerTextInput';
+const DATE_PICKER_TEXT_INPUT_NAME = "DatePickerTextInput";
 
 type DatePickerTextInputElement = HTMLInputElement;
 
-interface TextInputProps extends React.ComponentPropsWithRef<'input'> {}
+interface TextInputProps extends React.ComponentPropsWithRef<"input"> {}
 
-const DatePickerTextInput = React.forwardRef<DatePickerTextInputElement, TextInputProps>(
-  ({ placeholder, ...props }, forwardedRef) => {
-    const context = useDatePickerContext(DATE_PICKER_TEXT_INPUT_NAME);
+const DatePickerTextInput = React.forwardRef<
+  DatePickerTextInputElement,
+  TextInputProps
+>(({ placeholder, ...props }, forwardedRef) => {
+  const context = useDatePickerContext(DATE_PICKER_TEXT_INPUT_NAME);
 
-    const { onTextValueChange, textValue, onTextInputChange, onOpenChange, disabled, locale } =
-      context;
+  const {
+    onTextValueChange,
+    textValue,
+    onTextInputChange,
+    onOpenChange,
+    disabled,
+    locale,
+  } = context;
 
-    const composedRefs = useComposedRefs(forwardedRef, (node) => onTextInputChange(node));
+  const composedRefs = useComposedRefs(forwardedRef, (node) =>
+    onTextInputChange(node)
+  );
 
-    const handleOpenChange = () => {
-      if (!disabled) {
-        onOpenChange(true);
-      }
-    };
+  const handleOpenChange = () => {
+    if (!disabled) {
+      onOpenChange(true);
+    }
+  };
 
-    const formatter = useDateFormatter(locale, {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    });
+  const formatter = useDateFormatter(locale, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 
-    const [dateFormatPlaceholder, separator, dateStructure] = React.useMemo(() => {
+  const [dateFormatPlaceholder, separator, dateStructure] =
+    React.useMemo(() => {
       const parts = formatter.formatToParts(new Date());
 
       const dateStructure = parts.filter(
-        (part) => part.type === 'year' || part.type === 'month' || part.type === 'day'
+        (part) =>
+          part.type === "year" || part.type === "month" || part.type === "day"
       );
 
       const placeholder = dateStructure.map((part) => {
         switch (part.type) {
-          case 'day':
-            return 'DD';
-          case 'month':
-            return 'MM';
-          case 'year':
-            return 'YYYY';
+          case "day":
+            return "DD";
+          case "month":
+            return "MM";
+          case "year":
+            return "YYYY";
           default:
-            return '';
+            return "";
         }
       });
 
-      const separator = parts.find((part) => part.type === 'literal')?.value ?? '';
+      const separator =
+        parts.find((part) => part.type === "literal")?.value ?? "";
 
       return [placeholder, separator, dateStructure];
     }, [formatter]);
 
-    /**
-     * the `pattern` prop of an input cannot be a regex it must be a string without the `/` delimiters.
-     * Therefore, we manually escape the separator and `d` character.
-     */
-    const inputPattern = dateFormatPlaceholder
-      .map((part) => `\\d{${part.length}}`)
-      .join(`\\${separator}`);
+  /**
+   * the `pattern` prop of an input cannot be a regex it must be a string without the `/` delimiters.
+   * Therefore, we manually escape the separator and `d` character.
+   */
+  const inputPattern = dateFormatPlaceholder
+    .map((part) => `\\d{${part.length}}`)
+    .join(`\\${separator}`);
 
-    return (
-      <Input
-        role="combobox"
-        type="text"
-        inputMode="numeric"
-        ref={composedRefs}
-        aria-autocomplete="none"
-        aria-controls={context.contentId}
-        aria-disabled={context.disabled}
-        aria-expanded={context.open}
-        aria-required={context.required}
-        aria-haspopup="dialog"
-        data-state={context.open ? 'open' : 'closed'}
-        disabled={disabled}
-        data-disabled={disabled ? '' : undefined}
-        pattern={inputPattern}
-        placeholder={placeholder ?? dateFormatPlaceholder.join(separator)}
-        {...props}
-        // @ts-ignore
-        value={textValue ?? ''}
-        onBlur={composeEventHandlers(props.onBlur, () => {
-          if (!context.textValue) {
-            context.onValueChange(undefined);
+  return (
+    <Input
+      role="combobox"
+      type="text"
+      inputMode="numeric"
+      ref={composedRefs}
+      aria-autocomplete="none"
+      aria-controls={context.contentId}
+      aria-disabled={context.disabled}
+      aria-expanded={context.open}
+      aria-required={context.required}
+      aria-haspopup="dialog"
+      data-state={context.open ? "open" : "closed"}
+      disabled={disabled}
+      data-disabled={disabled ? "" : undefined}
+      pattern={inputPattern}
+      placeholder={placeholder ?? dateFormatPlaceholder.join(separator)}
+      {...props}
+      // @ts-ignore
+      value={textValue ?? ""}
+      onBlur={composeEventHandlers(props.onBlur, () => {
+        if (!context.textValue) {
+          context.onValueChange(undefined);
 
-            return;
+          return;
+        }
+
+        context.onTextValueChange(
+          formatter.format(context.calendarDate.toDate(context.timeZone))
+        );
+        context.onValueChange(context.calendarDate);
+      })}
+      onChange={composeEventHandlers(props.onChange, (event) => {
+        if (isPrintableCharacter(event.target.value)) {
+          const inputByPart = event.target.value.split(separator);
+
+          /**
+           * by using the dateStructure to understand the localised order we split and organise the event.target.value
+           * to DD MM YYYY and return as an array.
+           */
+          const [day, month, year] = dateStructure
+            .map((part, index) => {
+              const value = inputByPart[index];
+
+              return {
+                ...part,
+                value,
+              };
+            })
+            /**
+             * TODO: This could probably be better done?
+             */
+            .sort((a, b) => {
+              if (a.type === "year") {
+                return 1;
+              }
+
+              if (b.type === "year") {
+                return -1;
+              }
+
+              if (a.type === "month") {
+                return 1;
+              }
+
+              if (b.type === "month") {
+                return -1;
+              }
+
+              return 0;
+            })
+            .map((part) => part.value);
+
+          const currentYear = context.calendarDate.year;
+
+          /**
+           * If a user types 2 for the year then the year should be the current year with the last number as what they typed.
+           * This applies for if they've typed two numbers but not three or four numbers.
+           */
+          let newYear = context.calendarDate.year;
+
+          if (year) {
+            /**
+             * ensure the year is _at least_ 2 digits long so if the year
+             * is 2023 and you type 9 the year becomes 2009 instead of 2029,
+             * this is much similar to how other DatePickers work and makes more sense.
+             */
+            let normalizedYear = year.length === 1 ? `0${year}` : year;
+
+            /**
+             * The year we set to _must_ be 4 digits long.
+             */
+            newYear =
+              year.length < 3
+                ? Number(
+                    `${currentYear}`.slice(0, 4 - normalizedYear.length) +
+                      normalizedYear
+                  )
+                : Number(normalizedYear);
           }
 
-          context.onTextValueChange(
+          /**
+           * If you type a value like `94` and that's above the maxDate e.g. 2040 then
+           * we assume you would have meant 1994 and correct the date. Again, this is
+           * similar to how other DatePickers work.
+           *
+           * Note we only do this if the typed value is less than 3 digits long.
+           */
+          if (year && year.length < 3 && newYear > context.maxDate.year) {
+            newYear -= 100;
+          }
+
+          const newDateWithYear = context.calendarDate.set({ year: newYear });
+
+          const maxMonthNumber =
+            newDateWithYear.calendar.getMonthsInYear(newDateWithYear);
+
+          const newDateWithMonthAndYear = newDateWithYear.set({
+            month:
+              month && Number(month) <= maxMonthNumber
+                ? Number(month)
+                : undefined,
+          });
+
+          const maxDayNumber = newDateWithMonthAndYear.calendar.getDaysInMonth(
+            newDateWithMonthAndYear
+          );
+
+          const newDateWithDayMonthAndYear = newDateWithMonthAndYear.set({
+            day: day && Number(day) <= maxDayNumber ? Number(day) : undefined,
+          });
+
+          context.onCalendarDateChange(
+            constrainValue(
+              newDateWithDayMonthAndYear,
+              context.minDate,
+              context.maxDate
+            )
+          );
+
+          context.onTextValueChange(event.target.value);
+        }
+      })}
+      onKeyDown={composeEventHandlers(props.onKeyDown, (event) => {
+        if (
+          !context.open &&
+          (isPrintableCharacter(event.key) ||
+            ["ArrowDown", "Backspace"].includes(event.key))
+        ) {
+          handleOpenChange();
+        } else if (["Tab"].includes(event.key) && context.open) {
+          event.preventDefault();
+        } else if (["Escape"].includes(event.key)) {
+          if (context.open) {
+            context.onOpenChange(false);
+          } else {
+            context.onValueChange(undefined);
+            context.onTextValueChange("");
+          }
+          event.preventDefault();
+        } else if (
+          context.open &&
+          ["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(
+            event.key
+          )
+        ) {
+          event.preventDefault();
+
+          switch (event.key) {
+            case "ArrowDown": {
+              const nextDate = context.calendarDate.add({ weeks: 1 });
+
+              if (context.maxDate && nextDate.compare(context.maxDate) > 0) {
+                return;
+              }
+
+              context.onCalendarDateChange(nextDate);
+
+              return;
+            }
+            case "ArrowRight": {
+              const nextDate = context.calendarDate.add({ days: 1 });
+
+              if (context.maxDate && nextDate.compare(context.maxDate) > 0) {
+                return;
+              }
+
+              context.onCalendarDateChange(nextDate);
+
+              return;
+            }
+            case "ArrowUp": {
+              const nextDate = context.calendarDate.subtract({ weeks: 1 });
+
+              if (context.minDate && nextDate.compare(context.minDate) < 0) {
+                return;
+              }
+
+              context.onCalendarDateChange(nextDate);
+
+              return;
+            }
+            case "ArrowLeft": {
+              const nextDate = context.calendarDate.subtract({ days: 1 });
+
+              if (context.minDate && nextDate.compare(context.minDate) < 0) {
+                return;
+              }
+
+              context.onCalendarDateChange(nextDate);
+            }
+            // eslint-disable-next-line no-fallthrough
+            default:
+              break;
+          }
+        } else if (context.open && ["Enter"].includes(event.key)) {
+          event.preventDefault();
+          onTextValueChange(
             formatter.format(context.calendarDate.toDate(context.timeZone))
           );
           context.onValueChange(context.calendarDate);
-        })}
-        onChange={composeEventHandlers(props.onChange, (event) => {
-          if (isPrintableCharacter(event.target.value)) {
-            const inputByPart = event.target.value.split(separator);
+          context.onOpenChange(false);
+        }
+      })}
+    />
+  );
+});
 
-            /**
-             * by using the dateStructure to understand the localised order we split and organise the event.target.value
-             * to DD MM YYYY and return as an array.
-             */
-            const [day, month, year] = dateStructure
-              .map((part, index) => {
-                const value = inputByPart[index];
-
-                return {
-                  ...part,
-                  value,
-                };
-              })
-              /**
-               * TODO: This could probably be better done?
-               */
-              .sort((a, b) => {
-                if (a.type === 'year') {
-                  return 1;
-                }
-
-                if (b.type === 'year') {
-                  return -1;
-                }
-
-                if (a.type === 'month') {
-                  return 1;
-                }
-
-                if (b.type === 'month') {
-                  return -1;
-                }
-
-                return 0;
-              })
-              .map((part) => part.value);
-
-            const currentYear = context.calendarDate.year;
-
-            /**
-             * If a user types 2 for the year then the year should be the current year with the last number as what they typed.
-             * This applies for if they've typed two numbers but not three or four numbers.
-             */
-            let newYear = context.calendarDate.year;
-
-            if (year) {
-              /**
-               * ensure the year is _at least_ 2 digits long so if the year
-               * is 2023 and you type 9 the year becomes 2009 instead of 2029,
-               * this is much similar to how other DatePickers work and makes more sense.
-               */
-              let normalizedYear = year.length === 1 ? `0${year}` : year;
-
-              /**
-               * The year we set to _must_ be 4 digits long.
-               */
-              newYear =
-                year.length < 3
-                  ? Number(`${currentYear}`.slice(0, 4 - normalizedYear.length) + normalizedYear)
-                  : Number(normalizedYear);
-            }
-
-            /**
-             * If you type a value like `94` and that's above the maxDate e.g. 2040 then
-             * we assume you would have meant 1994 and correct the date. Again, this is
-             * similar to how other DatePickers work.
-             *
-             * Note we only do this if the typed value is less than 3 digits long.
-             */
-            if (year && year.length < 3 && newYear > context.maxDate.year) {
-              newYear -= 100;
-            }
-
-            const newDateWithYear = context.calendarDate.set({ year: newYear });
-
-            const maxMonthNumber = newDateWithYear.calendar.getMonthsInYear(newDateWithYear);
-
-            const newDateWithMonthAndYear = newDateWithYear.set({
-              month: month && Number(month) <= maxMonthNumber ? Number(month) : undefined,
-            });
-
-            const maxDayNumber =
-              newDateWithMonthAndYear.calendar.getDaysInMonth(newDateWithMonthAndYear);
-
-            const newDateWithDayMonthAndYear = newDateWithMonthAndYear.set({
-              day: day && Number(day) <= maxDayNumber ? Number(day) : undefined,
-            });
-
-            context.onCalendarDateChange(
-              constrainValue(newDateWithDayMonthAndYear, context.minDate, context.maxDate)
-            );
-
-            context.onTextValueChange(event.target.value);
-          }
-        })}
-        onKeyDown={composeEventHandlers(props.onKeyDown, (event) => {
-          if (
-            !context.open &&
-            (isPrintableCharacter(event.key) || ['ArrowDown', 'Backspace'].includes(event.key))
-          ) {
-            handleOpenChange();
-          } else if (['Tab'].includes(event.key) && context.open) {
-            event.preventDefault();
-          } else if (['Escape'].includes(event.key)) {
-            if (context.open) {
-              context.onOpenChange(false);
-            } else {
-              context.onValueChange(undefined);
-              context.onTextValueChange('');
-            }
-            event.preventDefault();
-          } else if (
-            context.open &&
-            ['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(event.key)
-          ) {
-            event.preventDefault();
-
-            switch (event.key) {
-              case 'ArrowDown': {
-                const nextDate = context.calendarDate.add({ weeks: 1 });
-
-                if (context.maxDate && nextDate.compare(context.maxDate) > 0) {
-                  return;
-                }
-
-                context.onCalendarDateChange(nextDate);
-
-                return;
-              }
-              case 'ArrowRight': {
-                const nextDate = context.calendarDate.add({ days: 1 });
-
-                if (context.maxDate && nextDate.compare(context.maxDate) > 0) {
-                  return;
-                }
-
-                context.onCalendarDateChange(nextDate);
-
-                return;
-              }
-              case 'ArrowUp': {
-                const nextDate = context.calendarDate.subtract({ weeks: 1 });
-
-                if (context.minDate && nextDate.compare(context.minDate) < 0) {
-                  return;
-                }
-
-                context.onCalendarDateChange(nextDate);
-
-                return;
-              }
-              case 'ArrowLeft': {
-                const nextDate = context.calendarDate.subtract({ days: 1 });
-
-                if (context.minDate && nextDate.compare(context.minDate) < 0) {
-                  return;
-                }
-
-                context.onCalendarDateChange(nextDate);
-              }
-              // eslint-disable-next-line no-fallthrough
-              default:
-                break;
-            }
-          } else if (context.open && ['Enter'].includes(event.key)) {
-            event.preventDefault();
-            onTextValueChange(formatter.format(context.calendarDate.toDate(context.timeZone)));
-            context.onValueChange(context.calendarDate);
-            context.onOpenChange(false);
-          }
-        })}
-      />
-    );
-  }
-);
-
-function constrainValue(date: CalendarDate, minValue: CalendarDate, maxValue: CalendarDate) {
+function constrainValue(
+  date: CalendarDate,
+  minValue: CalendarDate,
+  maxValue: CalendarDate
+) {
   if (minValue) {
     // @ts-ignore
     date = maxDateFn(date, minValue);
@@ -803,7 +878,7 @@ const Input = styled.input`
     outline: none;
   }
 
-  &[aria-disabled='true'] {
+  &[aria-disabled="true"] {
     cursor: inherit;
   }
 `;
@@ -812,42 +887,48 @@ const Input = styled.input`
  *  DatePickerContent
  * -----------------------------------------------------------------------------------------------*/
 
-const CONTENT_NAME = 'DatePickerContent';
+const CONTENT_NAME = "DatePickerContent";
 
 interface ContentProps extends ContentImplProps {}
 
 type DatePickerContentElement = DatePickerContentImplElement;
 
-const DatePickerContent = React.forwardRef<DatePickerContentElement, ContentProps>(
-  (props, forwardedRef) => {
-    const [fragment, setFragment] = React.useState<DocumentFragment>();
-    const context = useDatePickerContext(CONTENT_NAME);
+const DatePickerContent = React.forwardRef<
+  DatePickerContentElement,
+  ContentProps
+>((props, forwardedRef) => {
+  const [fragment, setFragment] = React.useState<DocumentFragment>();
+  const context = useDatePickerContext(CONTENT_NAME);
 
-    // setting the fragment in `useLayoutEffect` as `DocumentFragment` doesn't exist on the server
-    React.useLayoutEffect(() => {
-      setFragment(new DocumentFragment());
-    }, []);
+  // setting the fragment in `useLayoutEffect` as `DocumentFragment` doesn't exist on the server
+  React.useLayoutEffect(() => {
+    setFragment(new DocumentFragment());
+  }, []);
 
-    if (!context.open) {
-      const frag = fragment as Element | undefined;
+  if (!context.open) {
+    const frag = fragment as Element | undefined;
 
-      return frag ? createPortal(<div>{props.children}</div>, frag) : null;
-    }
-
-    return <DatePickerContentImpl {...props} ref={forwardedRef} />;
+    return frag ? createPortal(<div>{props.children}</div>, frag) : null;
   }
-);
+
+  return <DatePickerContentImpl {...props} ref={forwardedRef} />;
+});
 
 /* -------------------------------------------------------------------------------------------------
  *  DatePickerContentImpl
  * -----------------------------------------------------------------------------------------------*/
 
-const CONTENT_IMPL_NAME = 'DatePickerContent';
+const CONTENT_IMPL_NAME = "DatePickerContent";
 
 interface ContentImplProps
   extends Omit<
     PopoverPrimitives.ContentProps,
-    'source' | 'spacing' | 'trapped' | 'onDismiss' | 'hideAria' | 'disableOutsidePointerEvents'
+    | "source"
+    | "spacing"
+    | "trapped"
+    | "onDismiss"
+    | "hideAria"
+    | "disableOutsidePointerEvents"
   > {
   /**
    * @default 'Choose date'
@@ -857,84 +938,86 @@ interface ContentImplProps
 
 type DatePickerContentImplElement = HTMLDivElement;
 
-const DatePickerContentImpl = React.forwardRef<DatePickerContentImplElement, ContentImplProps>(
-  (props, forwardedRef) => {
-    const { label = 'Choose date', ...restProps } = props;
-    const { onOpenChange, ...context } = useDatePickerContext(CONTENT_IMPL_NAME);
+const DatePickerContentImpl = React.forwardRef<
+  DatePickerContentImplElement,
+  ContentImplProps
+>((props, forwardedRef) => {
+  const { label = "Choose date", ...restProps } = props;
+  const { onOpenChange, ...context } = useDatePickerContext(CONTENT_IMPL_NAME);
 
-    const { x, y, refs, strategy } = useFloating({
-      strategy: 'fixed',
-      placement: 'bottom-start',
-      middleware: [
-        offset({
-          mainAxis: 4,
-        }),
-        shift(),
-        flip(),
-      ],
-      elements: {
-        reference: context.trigger,
-      },
-      whileElementsMounted: autoUpdate,
-    });
+  const { x, y, refs, strategy } = useFloating({
+    strategy: "fixed",
+    placement: "bottom-start",
+    middleware: [
+      offset({
+        mainAxis: 4,
+      }),
+      shift(),
+      flip(),
+    ],
+    elements: {
+      reference: context.trigger,
+    },
+    whileElementsMounted: autoUpdate,
+  });
 
-    React.useEffect(() => {
-      const close = () => {
-        onOpenChange(false);
-      };
-      window.addEventListener('blur', close);
-      window.addEventListener('resize', close);
+  React.useEffect(() => {
+    const close = () => {
+      onOpenChange(false);
+    };
+    window.addEventListener("blur", close);
+    window.addEventListener("resize", close);
 
-      return () => {
-        window.removeEventListener('blur', close);
-        window.removeEventListener('resize', close);
-      };
-    }, [onOpenChange]);
+    return () => {
+      window.removeEventListener("blur", close);
+      window.removeEventListener("resize", close);
+    };
+  }, [onOpenChange]);
 
-    const composedRefs = useComposedRefs<DatePickerContentImplElement>(
-      forwardedRef,
-      (node) => context.onContentChange(node),
-      refs.setFloating
-    );
+  const composedRefs = useComposedRefs<DatePickerContentImplElement>(
+    forwardedRef,
+    (node) => context.onContentChange(node),
+    refs.setFloating
+  );
 
-    useFocusGuards();
+  useFocusGuards();
 
-    return (
-      <RemoveScroll allowPinchZoom>
-        <DismissibleLayer
-          asChild
-          // When focus is trapped, a focusout event may still happen.
-          // We make sure we don't trigger our `onDismiss` in such case.
-          onFocusOutside={(event) => {
-            event.preventDefault();
+  return (
+    <RemoveScroll allowPinchZoom>
+      {/* @ts-ignore */}
+      <DismissibleLayer
+        asChild
+        // When focus is trapped, a focusout event may still happen.
+        // We make sure we don't trigger our `onDismiss` in such case.
+        onFocusOutside={(event) => {
+          event.preventDefault();
+        }}
+        onDismiss={() => {
+          onOpenChange(false);
+        }}
+      >
+        <ContentElement
+          ref={composedRefs}
+          data-state={context.open ? "open" : "closed"}
+          onContextMenu={(event: any) => event.preventDefault()}
+          id={context.contentId}
+          role="dialog"
+          aria-modal="true"
+          aria-label={label}
+          style={{
+            left: x,
+            top: y,
+            position: strategy,
           }}
-          onDismiss={() => {
-            onOpenChange(false);
-          }}
-        >
-          <ContentElement
-            ref={composedRefs}
-            data-state={context.open ? 'open' : 'closed'}
-            onContextMenu={(event: any) => event.preventDefault()}
-            id={context.contentId}
-            role="dialog"
-            aria-modal="true"
-            aria-label={label}
-            style={{
-              left: x,
-              top: y,
-              position: strategy,
-            }}
-            hasRadius
-            background="neutral0"
-            padding={1}
-            {...restProps}
-          />
-        </DismissibleLayer>
-      </RemoveScroll>
-    );
-  }
-);
+          hasRadius
+          background="neutral0"
+          padding={1}
+          {...restProps}
+        />
+      </DismissibleLayer>
+    </RemoveScroll>
+  );
+});
 
 const ContentElement = styled(Box)`
   box-shadow: ${({ theme }) => theme.shadows.filterShadow};
@@ -946,36 +1029,48 @@ const ContentElement = styled(Box)`
  *  DatePickerCalendar
  * -----------------------------------------------------------------------------------------------*/
 
-const DATE_PICKER_CALENDAR_NAME = 'DatePickerCalendar';
+const DATE_PICKER_CALENDAR_NAME = "DatePickerCalendar";
 
-interface CalendarProps extends FlexProps<'div'> {
+interface CalendarProps extends FlexProps<"div"> {
   monthSelectLabel?: string;
   yearSelectLabel?: string;
 }
 
 const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
   ({ monthSelectLabel, yearSelectLabel, ...restProps }, ref) => {
-    const { locale, timeZone, minDate, maxDate, calendarDate, onCalendarDateChange } =
-      useDatePickerContext(DATE_PICKER_CALENDAR_NAME);
+    const {
+      locale,
+      timeZone,
+      minDate,
+      maxDate,
+      calendarDate,
+      onCalendarDateChange,
+    } = useDatePickerContext(DATE_PICKER_CALENDAR_NAME);
     const startDate = startOfMonth(calendarDate);
 
     const years: string[] = React.useMemo(() => {
       const minYear = minDate.year;
       const maxYear = maxDate.year;
 
-      return [...Array(maxYear - minYear + 1).keys()].map((y) => (minYear + y).toString());
+      return [...Array(maxYear - minYear + 1).keys()].map((y) =>
+        (minYear + y).toString()
+      );
     }, [minDate, maxDate]);
 
-    const monthFormatter = useDateFormatter(locale, { month: 'long' });
+    const monthFormatter = useDateFormatter(locale, { month: "long" });
     const months: string[] = React.useMemo(
       () =>
-        [...Array(calendarDate.calendar.getMonthsInYear(calendarDate)).keys()].map((m) =>
-          monthFormatter.format(calendarDate.set({ month: m + 1 }).toDate(timeZone))
+        [
+          ...Array(calendarDate.calendar.getMonthsInYear(calendarDate)).keys(),
+        ].map((m) =>
+          monthFormatter.format(
+            calendarDate.set({ month: m + 1 }).toDate(timeZone)
+          )
         ),
       [calendarDate, monthFormatter, timeZone]
     );
 
-    const dayFormatter = useDateFormatter(locale, { weekday: 'short' });
+    const dayFormatter = useDateFormatter(locale, { weekday: "short" });
     /**
      * These are the strings of our days of the week
      * e.g. `Mon`, `Tue`, `Wed`, etc.
@@ -992,7 +1087,7 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
     }, [timeZone, locale, dayFormatter]);
 
     const handleMonthChange = (month: string | number) => {
-      if (typeof month === 'number') {
+      if (typeof month === "number") {
         /**
          * This just to make TS happy, we're not going to get a
          * number because we only use strings as options
@@ -1000,12 +1095,14 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
         return;
       }
 
-      const updatedDate = calendarDate.set({ month: months.indexOf(month) + 1 });
+      const updatedDate = calendarDate.set({
+        month: months.indexOf(month) + 1,
+      });
       onCalendarDateChange(updatedDate);
     };
 
     const handleYearChange = (year: string | number) => {
-      if (typeof year === 'number') {
+      if (typeof year === "number") {
         /**
          * This just to make TS happy, we're not going to get a
          * number because we only use strings as options
@@ -1020,7 +1117,13 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
     const getDatesInWeek = makeGetDatesInWeek(startDate, locale);
 
     return (
-      <Flex ref={ref} direction="column" alignItems="stretch" padding={4} {...restProps}>
+      <Flex
+        ref={ref}
+        direction="column"
+        alignItems="stretch"
+        padding={4}
+        {...restProps}
+      >
         <ToolbarFlex
           justifyContent="flex-start"
           paddingBottom={4}
@@ -1028,6 +1131,7 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
           paddingRight={2}
           gap={2}
         >
+          {/* @ts-ignore */}
           <SingleSelectInput
             label={monthSelectLabel}
             size="S"
@@ -1040,6 +1144,7 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
               </SingleSelectOption>
             ))}
           </SingleSelectInput>
+          {/* @ts-ignore */}
           <SingleSelectInput
             size="S"
             value={calendarDate.year.toString()}
@@ -1087,47 +1192,48 @@ const DatePickerCalendar = React.forwardRef<HTMLDivElement, CalendarProps>(
   }
 );
 
-const makeGetDatesInWeek = (from: CalendarDate, locale: string) => (weekIndex: number) => {
-  let date = from.add({ weeks: weekIndex });
-  let dates: Array<CalendarDate | null> = [];
+const makeGetDatesInWeek =
+  (from: CalendarDate, locale: string) => (weekIndex: number) => {
+    let date = from.add({ weeks: weekIndex });
+    let dates: Array<CalendarDate | null> = [];
 
-  date = startOfWeek(date, locale);
+    date = startOfWeek(date, locale);
 
-  /**
-   * startOfWeek will clamp dates within the calendar system's valid range, which may
-   * start in the middle of a week. In this case, add null placeholders.
-   */
-  let dayOfWeek = getDayOfWeek(date, locale);
-  for (let i = 0; i < dayOfWeek; i++) {
-    dates.push(null);
-  }
-
-  while (dates.length < 7) {
-    dates.push(date);
-    let nextDate = date.add({ days: 1 });
-
-    if (isSameDay(date, nextDate)) {
-      /**
-       * If the next day is the same, we have hit the end of the calendar system.
-       */
-      break;
+    /**
+     * startOfWeek will clamp dates within the calendar system's valid range, which may
+     * start in the middle of a week. In this case, add null placeholders.
+     */
+    let dayOfWeek = getDayOfWeek(date, locale);
+    for (let i = 0; i < dayOfWeek; i++) {
+      dates.push(null);
     }
 
-    date = nextDate;
-  }
+    while (dates.length < 7) {
+      dates.push(date);
+      let nextDate = date.add({ days: 1 });
 
-  /**
-   * Add null placeholders if at the end of the calendar system.
-   */
-  while (dates.length < 7) {
-    dates.push(null);
-  }
+      if (isSameDay(date, nextDate)) {
+        /**
+         * If the next day is the same, we have hit the end of the calendar system.
+         */
+        break;
+      }
 
-  return dates;
-};
+      date = nextDate;
+    }
+
+    /**
+     * Add null placeholders if at the end of the calendar system.
+     */
+    while (dates.length < 7) {
+      dates.push(null);
+    }
+
+    return dates;
+  };
 
 const ToolbarFlex = styled(Flex)`
-  div[role='combobox'] {
+  div[role="combobox"] {
     border: 1px solid transparent;
     background: transparent;
     font-weight: ${(props) => props.theme.fontWeights.bold};
@@ -1153,28 +1259,29 @@ const ToolbarFlex = styled(Flex)`
  * DatePickerHeaderCell
  * -----------------------------------------------------------------------------------------------*/
 
-interface HeaderCellProps extends Omit<BoxProps<'td'>, 'children'> {
+interface HeaderCellProps extends Omit<BoxProps<"td">, "children"> {
   children: string;
 }
 
-const DatePickerHeaderCell = React.forwardRef<HTMLTableCellElement, HeaderCellProps>(
-  ({ children, ...props }, forwardedRef) => {
-    return (
-      <Th
-        as="th"
-        role="gridcell"
-        ref={forwardedRef}
-        {...props}
-        height={`${24 / 16}rem`}
-        width={`${32 / 16}rem`}
-      >
-        <Typography variant="pi" fontWeight="bold" color="neutral800">
-          {children.slice(0, 2)}
-        </Typography>
-      </Th>
-    );
-  }
-);
+const DatePickerHeaderCell = React.forwardRef<
+  HTMLTableCellElement,
+  HeaderCellProps
+>(({ children, ...props }, forwardedRef) => {
+  return (
+    <Th
+      as="th"
+      role="gridcell"
+      ref={forwardedRef}
+      {...props}
+      height={`${24 / 16}rem`}
+      width={`${32 / 16}rem`}
+    >
+      <Typography variant="pi" fontWeight="bold" color="neutral800">
+        {children.slice(0, 2)}
+      </Typography>
+    </Th>
+  );
+});
 
 const Th = styled(Box)`
   border-radius: ${({ theme }) => theme.borderRadius};
@@ -1185,97 +1292,101 @@ const Th = styled(Box)`
  *  DatePickerCalendarCell
  * -----------------------------------------------------------------------------------------------*/
 
-const DATE_PICKER_CALEDNAR_CELL_NAME = 'DatePickerCalendarCell';
+const DATE_PICKER_CALEDNAR_CELL_NAME = "DatePickerCalendarCell";
 
 type DatePickerCalendarCellElement = HTMLTableCellElement;
 
-interface CalendarCellProps extends BoxProps<'td'> {
+interface CalendarCellProps extends BoxProps<"td"> {
   date: CalendarDate;
   startDate: CalendarDate;
 }
 
-const DatePickerCalendarCell = React.forwardRef<DatePickerCalendarCellElement, CalendarCellProps>(
-  ({ date, startDate, ...props }, forwardedRef) => {
-    const {
-      timeZone,
-      locale,
-      calendarDate,
-      onValueChange,
-      onOpenChange,
-      onTextValueChange,
-      onCalendarDateChange,
-    } = useDatePickerContext(DATE_PICKER_CALEDNAR_CELL_NAME);
+const DatePickerCalendarCell = React.forwardRef<
+  DatePickerCalendarCellElement,
+  CalendarCellProps
+>(({ date, startDate, ...props }, forwardedRef) => {
+  const {
+    timeZone,
+    locale,
+    calendarDate,
+    onValueChange,
+    onOpenChange,
+    onTextValueChange,
+    onCalendarDateChange,
+  } = useDatePickerContext(DATE_PICKER_CALEDNAR_CELL_NAME);
 
-    const isSelected = isSameDay(calendarDate, date);
+  const isSelected = isSameDay(calendarDate, date);
 
-    const dateFormatter = useDateFormatter(locale, {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
+  const dateFormatter = useDateFormatter(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
-    const label = React.useMemo(
-      () => dateFormatter.format(date.toDate(timeZone)),
-      [dateFormatter, date, timeZone]
-    );
+  const label = React.useMemo(
+    () => dateFormatter.format(date.toDate(timeZone)),
+    [dateFormatter, date, timeZone]
+  );
 
-    const cellDateFormatter = useDateFormatter(locale, {
-      day: 'numeric',
-      calendar: date.calendar.identifier,
-    });
+  const cellDateFormatter = useDateFormatter(locale, {
+    day: "numeric",
+    calendar: date.calendar.identifier,
+  });
 
-    const formattedDate = React.useMemo(
-      () =>
-        cellDateFormatter.formatToParts(date.toDate(timeZone)).find((part) => part.type === 'day')!
-          .value,
-      [cellDateFormatter, date, timeZone]
-    );
+  const formattedDate = React.useMemo(
+    () =>
+      cellDateFormatter
+        .formatToParts(date.toDate(timeZone))
+        .find((part) => part.type === "day")!.value,
+    [cellDateFormatter, date, timeZone]
+  );
 
-    const textValueFormatter = useDateFormatter(locale, {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+  const textValueFormatter = useDateFormatter(locale, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 
-    const endDate = endOfMonth(startDate);
-    const isOutsideVisibleRange = date.compare(startDate) < 0 || date.compare(endDate) > 0;
+  const endDate = endOfMonth(startDate);
+  const isOutsideVisibleRange =
+    date.compare(startDate) < 0 || date.compare(endDate) > 0;
 
-    let textColor: keyof DefaultTheme['colors'] = 'neutral900';
+  // @ts-ignore
+  let textColor: keyof DefaultTheme["colors"] = "neutral900";
 
-    if (isSelected) {
-      textColor = 'primary600';
-    } else if (isOutsideVisibleRange) {
-      textColor = 'neutral600';
-    }
-
-    return (
-      <Cell
-        as="td"
-        role="gridcell"
-        ref={forwardedRef}
-        aria-selected={isSelected}
-        {...props}
-        hasRadius
-        aria-label={label}
-        tabIndex={isSelected ? 0 : -1}
-        background={isSelected ? 'primary100' : 'neutral0'}
-        cursor="pointer"
-        onPointerDown={composeEventHandlers(props.onPointerDown, (event) => {
-          event.preventDefault();
-          onCalendarDateChange(date);
-          onValueChange(date);
-          onTextValueChange(textValueFormatter.format(date.toDate(timeZone)));
-          onOpenChange(false);
-        })}
-      >
-        <Typography variant="pi" textColor={textColor}>
-          {formattedDate}
-        </Typography>
-      </Cell>
-    );
+  if (isSelected) {
+    textColor = "primary600";
+  } else if (isOutsideVisibleRange) {
+    textColor = "neutral600";
   }
-);
+
+  return (
+    <Cell
+      as="td"
+      role="gridcell"
+      ref={forwardedRef}
+      aria-selected={isSelected}
+      {...props}
+      hasRadius
+      aria-label={label}
+      tabIndex={isSelected ? 0 : -1}
+      background={isSelected ? "primary100" : "neutral0"}
+      cursor="pointer"
+      onPointerDown={composeEventHandlers(props.onPointerDown, (event) => {
+        event.preventDefault();
+        onCalendarDateChange(date);
+        onValueChange(date);
+        onTextValueChange(textValueFormatter.format(date.toDate(timeZone)));
+        onOpenChange(false);
+      })}
+    >
+      <Typography variant="pi" textColor={textColor}>
+        {formattedDate}
+      </Typography>
+    </Cell>
+  );
+});
 
 const Cell = styled(Box)`
   text-align: center;
@@ -1296,34 +1407,37 @@ const Cell = styled(Box)`
  * DatePickerField
  * -----------------------------------------------------------------------------------------------*/
 
-interface DatePickerProps extends Pick<FieldProps, 'hint'>, DatePickerInputProps {
+interface DatePickerProps
+  extends Pick<FieldProps, "hint">,
+    DatePickerInputProps {
   label: string;
 }
 
-const DatePickerField = React.forwardRef<DatePickerTextInputElement, DatePickerProps>(
-  (props, ref) => {
-    const { error, hint, id, required, label, ...restProps } = props;
+const DatePickerField = React.forwardRef<
+  DatePickerTextInputElement,
+  DatePickerProps
+>((props, ref) => {
+  const { error, hint, id, required, label, ...restProps } = props;
 
-    const generatedId = useId(id);
+  const generatedId = useId(id);
 
-    return (
-      <Field.Field error={error} hint={hint} required={required} id={generatedId}>
-        <Flex direction="column" alignItems="stretch" gap={1}>
-          <Field.FieldLabel>{label}</Field.FieldLabel>
-          <DatePickerInput
-            ref={ref}
-            id={generatedId}
-            error={error}
-            required={required}
-            {...restProps}
-          />
-          <Field.FieldHint />
-          <Field.FieldError />
-        </Flex>
-      </Field.Field>
-    );
-  }
-);
+  return (
+    <Field.Field error={error} hint={hint} required={required} id={generatedId}>
+      <Flex direction="column" alignItems="stretch" gap={1}>
+        <Field.FieldLabel>{label}</Field.FieldLabel>
+        <DatePickerInput
+          ref={ref}
+          id={generatedId}
+          error={error}
+          required={required}
+          {...restProps}
+        />
+        <Field.FieldHint />
+        <Field.FieldError />
+      </Flex>
+    </Field.Field>
+  );
+});
 
 const warnOnce = once(console.warn);
 
@@ -1331,7 +1445,7 @@ const convertUTCDateToCalendarDate = (date: Date | string): CalendarDate => {
   /**
    * TODO: remove this in V2, it's a deprecated API
    */
-  if (typeof date === 'string') {
+  if (typeof date === "string") {
     warnOnce(
       "It looks like you're passing a string as representation of a Date to the DatePicker. This is deprecated, look to passing a Date instead."
     );
@@ -1345,7 +1459,7 @@ const convertUTCDateToCalendarDate = (date: Date | string): CalendarDate => {
   }
 
   const utcDateString = date.toISOString();
-  const zonedDateTime = parseAbsolute(utcDateString, 'UTC');
+  const zonedDateTime = parseAbsolute(utcDateString, "UTC");
 
   /**
    * ZonedDateTime can't have weeks added,

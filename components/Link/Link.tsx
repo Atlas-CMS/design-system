@@ -1,19 +1,20 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { ExternalLink } from '@strapi/icons';
-import { NavLink, NavLinkProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { ExternalLink } from "@strapi/icons";
+import { NavLink, NavLinkProps } from "react-router-dom";
+import styled from "styled-components";
 
-import { Box } from '../Box';
-import { buttonFocusStyle } from '../themes/utils';
-import { Typography } from '../Typography';
+import { Box } from "../Box";
+import { buttonFocusStyle } from "../themes/utils";
+import { Typography } from "../Typography";
 
 const LinkWrapper = styled.a<{ disabled: boolean }>`
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  pointer-events: ${({ disabled }) => (disabled ? 'none' : undefined)};
-  color: ${({ disabled, theme }) => (disabled ? theme.colors.neutral600 : theme.colors.primary600)};
+  pointer-events: ${({ disabled }) => (disabled ? "none" : undefined)};
+  color: ${({ disabled, theme }) =>
+    disabled ? theme.colors.neutral600 : theme.colors.primary600};
 
   svg path {
     transition: fill 150ms ease-out;
@@ -44,14 +45,15 @@ const IconWrapper = styled(Box)`
   display: flex;
 `;
 
-interface SharedLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+interface SharedLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   disabled?: boolean;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
 }
 
 interface ToLinkProps extends SharedLinkProps {
-  to: NavLinkProps['to'];
+  to: NavLinkProps["to"];
   href?: never;
 }
 
@@ -63,17 +65,21 @@ interface HrefLinkProps extends SharedLinkProps {
 type LinkProps = ToLinkProps | HrefLinkProps;
 
 export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ children, href, to, disabled = false, startIcon, endIcon, ...restProps }, ref) => {
-    const target = href ? '_blank' : undefined;
-    const rel = href ? 'noreferrer noopener' : undefined;
+  (
+    { children, href, to, disabled = false, startIcon, endIcon, ...restProps },
+    ref
+  ) => {
+    const target = href ? "_blank" : undefined;
+    const rel = href ? "noreferrer noopener" : undefined;
 
     return (
       <LinkWrapper
-        as={to && !disabled ? NavLink : 'a'}
+        // @ts-ignore
+        as={to && !disabled ? NavLink : "a"}
         target={target}
         rel={rel}
         to={disabled ? undefined : to}
-        href={disabled ? '#' : href}
+        href={disabled ? "#" : href}
         disabled={disabled}
         ref={ref}
         {...restProps}
@@ -99,5 +105,5 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(
         )}
       </LinkWrapper>
     );
-  },
+  }
 );

@@ -1,15 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import { ChevronLeft, ChevronRight } from '@strapi/icons';
-import { NavLink, NavLinkProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { ChevronLeft, ChevronRight } from "@strapi/icons";
+import { NavLink, NavLinkProps } from "react-router-dom";
+import styled from "styled-components";
 
-import { usePagination } from './PaginationContext';
-import { Box, BoxProps } from '../Box';
-import { buttonFocusStyle } from '../themes/utils';
-import { Typography } from '../Typography';
-import { VisuallyHidden } from '../VisuallyHidden';
+import { usePagination } from "./PaginationContext";
+import { Box, BoxProps } from "../Box";
+import { buttonFocusStyle } from "../themes/utils";
+import { Typography } from "../Typography";
+import { VisuallyHidden } from "../VisuallyHidden";
 
+// @ts-ignore
 interface PaginationLinkProps extends NavLinkProps {
   active: boolean;
   children: React.ReactNode;
@@ -25,13 +26,17 @@ const transientProps = {
   active: true,
 };
 
+// @ts-ignore
 const LinkWrapper = styled(NavLink).withConfig<PaginationLinkProps>({
   // @ts-ignore
-  shouldForwardProp: (prop, defPropValFN) => !transientProps[prop] && defPropValFN(prop),
+  shouldForwardProp: (prop, defPropValFN) =>
+    // @ts-ignore
+    !transientProps[prop] && defPropValFN(prop),
 })`
   padding: ${({ theme }) => theme.spaces[3]};
   border-radius: ${({ theme }) => theme.borderRadius};
-  box-shadow: ${({ active, theme }) => (active ? theme.shadows.filterShadow : undefined)};
+  box-shadow: ${({ active, theme }) =>
+    active ? theme.shadows.filterShadow : undefined};
   text-decoration: none;
   display: flex;
 
@@ -39,8 +44,10 @@ const LinkWrapper = styled(NavLink).withConfig<PaginationLinkProps>({
 `;
 
 const PageLinkWrapper = styled(LinkWrapper)<PaginationLinkProps>`
-  color: ${({ theme, active }) => (active ? theme.colors.primary700 : theme.colors.neutral800)};
-  background: ${({ theme, active }) => (active ? theme.colors.neutral0 : undefined)};
+  color: ${({ theme, active }) =>
+    active ? theme.colors.primary700 : theme.colors.neutral800};
+  background: ${({ theme, active }) =>
+    active ? theme.colors.neutral0 : undefined};
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.filterShadow};
@@ -51,32 +58,42 @@ const ActionLinkWrapper = styled(LinkWrapper)<PaginationLinkProps>`
   font-size: ${11 / 16}rem;
 
   svg path {
-    fill: ${(p) => (p['aria-disabled'] ? p.theme.colors.neutral300 : p.theme.colors.neutral600)};
+    fill: ${(p) =>
+      p["aria-disabled"]
+        ? p.theme.colors.neutral300
+        : p.theme.colors.neutral600};
   }
 
   &:focus,
   &:hover {
     svg path {
-      fill: ${(p) => (p['aria-disabled'] ? p.theme.colors.neutral300 : p.theme.colors.neutral700)};
+      fill: ${(p) =>
+        p["aria-disabled"]
+          ? p.theme.colors.neutral300
+          : p.theme.colors.neutral700};
     }
   }
 
   ${(p) =>
-    p['aria-disabled']
+    p["aria-disabled"]
       ? `
   pointer-events: none;
     `
       : undefined}
 `;
 
-export const PreviousLink = ({ children, to, ...props }: PaginationLinkProps) => {
+export const PreviousLink = ({
+  children,
+  to,
+  ...props
+}: PaginationLinkProps) => {
   const { activePage } = usePagination();
 
   const disabled = activePage === 1;
 
   return (
     <ActionLinkWrapper
-      to={disabled ? '#' : to}
+      to={disabled ? "#" : to}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : undefined}
       {...props}
@@ -87,7 +104,7 @@ export const PreviousLink = ({ children, to, ...props }: PaginationLinkProps) =>
   );
 };
 
-PreviousLink.displayName = 'PreviousLink';
+PreviousLink.displayName = "PreviousLink";
 
 export const NextLink = ({ children, to, ...props }: PaginationLinkProps) => {
   const { activePage, pageCount } = usePagination();
@@ -96,7 +113,7 @@ export const NextLink = ({ children, to, ...props }: PaginationLinkProps) => {
 
   return (
     <ActionLinkWrapper
-      to={disabled ? '#' : to}
+      to={disabled ? "#" : to}
       aria-disabled={disabled}
       tabIndex={disabled ? -1 : undefined}
       {...props}
@@ -107,9 +124,13 @@ export const NextLink = ({ children, to, ...props }: PaginationLinkProps) => {
   );
 };
 
-NextLink.displayName = 'NextLink';
+NextLink.displayName = "NextLink";
 
-export const PageLink = ({ number, children, ...props }: PaginationPageLinkProps) => {
+export const PageLink = ({
+  number,
+  children,
+  ...props
+}: PaginationPageLinkProps) => {
   const { activePage } = usePagination();
 
   const isActive = activePage === number;
@@ -119,7 +140,7 @@ export const PageLink = ({ number, children, ...props }: PaginationPageLinkProps
       <VisuallyHidden>{children}</VisuallyHidden>
       <Typography
         aria-hidden
-        fontWeight={isActive ? 'bold' : undefined}
+        fontWeight={isActive ? "bold" : undefined}
         lineHeight="revert"
         variant="pi"
       >
@@ -129,12 +150,17 @@ export const PageLink = ({ number, children, ...props }: PaginationPageLinkProps
   );
 };
 
-PageLink.displayName = 'PageLink';
+PageLink.displayName = "PageLink";
 
 export const Dots = ({ children, ...props }: DotsProps) => (
   <Box {...props}>
     <VisuallyHidden>{children}</VisuallyHidden>
-    <Typography aria-hidden lineHeight="revert" textColor="neutral800" variant="pi">
+    <Typography
+      aria-hidden
+      lineHeight="revert"
+      textColor="neutral800"
+      variant="pi"
+    >
       …
     </Typography>
   </Box>

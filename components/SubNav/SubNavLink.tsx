@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 
-import { Dot } from '@strapi/icons';
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { Dot } from "@strapi/icons";
+import { NavLink } from "react-router-dom";
+import styled from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { Flex } from '../Flex';
-import { Typography } from '../Typography';
+import { Box, BoxProps } from "../Box";
+import { Flex } from "../Flex";
+import { Typography } from "../Typography";
 
 export interface SubNavLinkProps extends BoxProps {
   icon: React.ReactNode;
@@ -48,7 +48,8 @@ const CustomBullet = styled(Dot)<{ $active?: boolean }>`
   width: ${12 / 16}rem;
   height: ${4 / 16}rem;
   * {
-    fill: ${({ theme, $active }) => ($active ? theme.colors.primary600 : theme.colors.neutral600)};
+    fill: ${({ theme, $active }) =>
+      $active ? theme.colors.primary600 : theme.colors.neutral600};
   }
 `;
 const IconWrapper = styled.div`
@@ -67,6 +68,7 @@ export const SubNavLink = ({
 }: SubNavLinkProps) => {
   return (
     <SubNavLinkWrapper
+      // @ts-ignore
       as={NavLink}
       icon={icon}
       background="neutral100"

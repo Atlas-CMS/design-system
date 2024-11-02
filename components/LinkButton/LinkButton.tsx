@@ -1,16 +1,23 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { NavLink, NavLinkProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { NavLink, NavLinkProps } from "react-router-dom";
+import styled from "styled-components";
 
-import { BaseButtonWrapper, BaseButtonProps } from '../BaseButton';
-import { VARIANTS, BUTTON_SIZES } from '../Button/constants';
-import { getDisabledStyle, getHoverStyle, getActiveStyle, getVariantStyle } from '../Button/utils';
-import { Flex } from '../Flex';
-import { Typography } from '../Typography';
+import { BaseButtonWrapper, BaseButtonProps } from "../BaseButton";
+import { VARIANTS, BUTTON_SIZES } from "../Button/constants";
+import {
+  getDisabledStyle,
+  getHoverStyle,
+  getActiveStyle,
+  getVariantStyle,
+} from "../Button/utils";
+import { Flex } from "../Flex";
+import { Typography } from "../Typography";
 
-const LinkWrapper = styled(BaseButtonWrapper)<Required<Pick<LinkButtonProps, 'variant'>>>`
-  &[aria-disabled='true'] {
+const LinkWrapper = styled(BaseButtonWrapper)<
+  Required<Pick<LinkButtonProps, "variant">>
+>`
+  &[aria-disabled="true"] {
     ${getDisabledStyle}
     &:active {
       ${getDisabledStyle}
@@ -34,7 +41,7 @@ interface SharedLinkProps extends BaseButtonProps {
 }
 
 interface ToLinkProps extends SharedLinkProps {
-  to: NavLinkProps['to'];
+  to: NavLinkProps["to"];
   href?: never;
 }
 
@@ -46,11 +53,24 @@ interface HrefLinkProps extends SharedLinkProps {
 type LinkButtonProps = ToLinkProps | HrefLinkProps;
 
 export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(
-  ({ variant = 'default', startIcon, endIcon, disabled = false, children, size = 'S', href, to, ...props }, ref) => {
-    const target = href ? '_blank' : undefined;
-    const rel = href ? 'noreferrer noopener' : undefined;
+  (
+    {
+      variant = "default",
+      startIcon,
+      endIcon,
+      disabled = false,
+      children,
+      size = "S",
+      href,
+      to,
+      ...props
+    },
+    ref
+  ) => {
+    const target = href ? "_blank" : undefined;
+    const rel = href ? "noreferrer noopener" : undefined;
 
-    const paddingX = size === 'S' ? 2 : '10px';
+    const paddingX = size === "S" ? 2 : "10px";
     const paddingY = 4;
 
     return (
@@ -62,7 +82,7 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(
         target={target}
         rel={rel}
         to={disabled ? undefined : to}
-        href={disabled ? '#' : href}
+        href={disabled ? "#" : href}
         background="buttonPrimary600"
         borderColor="buttonPrimary600"
         hasRadius
@@ -72,18 +92,23 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonProps>(
         paddingLeft={paddingY}
         paddingRight={paddingY}
         paddingTop={paddingX}
-        pointerEvents={disabled ? 'none' : undefined}
+        pointerEvents={disabled ? "none" : undefined}
         {...props}
-        as={to && !disabled ? NavLink : 'a'}
+        // @ts-ignore
+        as={to && !disabled ? NavLink : "a"}
       >
         {startIcon && <Flex aria-hidden>{startIcon}</Flex>}
 
-        <Typography variant={size === 'S' ? 'pi' : undefined} fontWeight="bold" textColor="buttonNeutral0">
+        <Typography
+          variant={size === "S" ? "pi" : undefined}
+          fontWeight="bold"
+          textColor="buttonNeutral0"
+        >
           {children}
         </Typography>
 
         {endIcon && <Flex aria-hidden>{endIcon}</Flex>}
       </LinkWrapper>
     );
-  },
+  }
 );

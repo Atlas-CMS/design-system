@@ -1,15 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import { NavLink as RouterLink, LinkProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { NavLink as RouterLink, LinkProps } from "react-router-dom";
+import styled from "styled-components";
 
-import { useMainNav } from './MainNavContext';
-import { Badge } from '../Badge';
-import { Box } from '../Box';
-import { Flex } from '../Flex';
-import { Tooltip } from '../Tooltip';
-import { Typography } from '../Typography';
+import { useMainNav } from "./MainNavContext";
+import { Badge } from "../Badge";
+import { Box } from "../Box";
+import { Flex } from "../Flex";
+import { Tooltip } from "../Tooltip";
+import { Typography } from "../Typography";
 
+// @ts-ignore
 export interface NavLinkProps extends LinkProps {
   badgeAriaLabel: string;
   badgeContent: string | number;
@@ -24,6 +25,7 @@ const IconBox = styled(Box)`
   }
 `;
 
+// @ts-ignore
 const MainNavLinkWrapper = styled(RouterLink)`
   position: relative;
   text-decoration: none;
@@ -95,7 +97,13 @@ const CustomBadge = styled(Badge)<{ condensed?: boolean }>`
   background: ${({ theme }) => theme.colors.primary600};
 `;
 
-export const NavLink = ({ children, icon, badgeContent, badgeAriaLabel, ...props }: NavLinkProps) => {
+export const NavLink = ({
+  children,
+  icon,
+  badgeContent,
+  badgeAriaLabel,
+  ...props
+}: NavLinkProps) => {
   const condensed = useMainNav();
 
   if (condensed) {

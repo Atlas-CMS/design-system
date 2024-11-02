@@ -1,33 +1,40 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { useFloating, flip, shift, offset, autoUpdate, Placement } from '@floating-ui/react-dom';
-import { FocusScope } from '@radix-ui/react-focus-scope';
-import { useCallbackRef, composeEventHandlers } from '@strapi/ui-primitives';
-import { hideOthers } from 'aria-hidden';
-import { RemoveScroll } from 'react-remove-scroll';
-import styled from 'styled-components';
+import {
+  useFloating,
+  flip,
+  shift,
+  offset,
+  autoUpdate,
+  Placement,
+} from "@floating-ui/react-dom";
+import { FocusScope } from "@radix-ui/react-focus-scope";
+import { useCallbackRef, composeEventHandlers } from "@strapi/ui-primitives";
+import { hideOthers } from "aria-hidden";
+import { RemoveScroll } from "react-remove-scroll";
+import styled from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { DismissibleLayer, DismissibleLayerProps } from '../DismissibleLayer';
-import { stripReactIdOfColon } from '../helpers/strings';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { useId } from '../hooks/useId';
-import { useIntersection } from '../hooks/useIntersection';
-import { Portal } from '../Portal';
+import { Box, BoxProps } from "../Box";
+import { DismissibleLayer, DismissibleLayerProps } from "../DismissibleLayer";
+import { stripReactIdOfColon } from "../helpers/strings";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { useId } from "../hooks/useId";
+import { useIntersection } from "../hooks/useIntersection";
+import { Portal } from "../Portal";
 
 export const POPOVER_PLACEMENTS = [
-  'top',
-  'top-start',
-  'top-end',
-  'right',
-  'right-start',
-  'right-end',
-  'bottom',
-  'bottom-start',
-  'bottom-end',
-  'left',
-  'left-start',
-  'left-end',
+  "top",
+  "top-start",
+  "top-end",
+  "right",
+  "right-start",
+  "right-end",
+  "bottom",
+  "bottom-start",
+  "bottom-end",
+  "left",
+  "left-start",
+  "left-end",
 ] as const;
 
 const PopoverWrapper = styled(Box)`
@@ -36,8 +43,14 @@ const PopoverWrapper = styled(Box)`
   border: 1px solid ${({ theme }) => theme.colors.neutral150};
 `;
 export interface ContentProps
-  extends BoxProps<'div'>,
-    Pick<DismissibleLayerProps, 'onEscapeKeyDown' | 'onPointerDownOutside' | 'onDismiss' | 'onFocusOutside'> {
+  extends BoxProps<"div">,
+    Pick<
+      DismissibleLayerProps,
+      | "onEscapeKeyDown"
+      | "onPointerDownOutside"
+      | "onDismiss"
+      | "onFocusOutside"
+    > {
   source: React.MutableRefObject<HTMLElement>;
   placement?: Placement;
   fullWidth?: boolean;
@@ -53,7 +66,7 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
       children,
       spacing = 0,
       fullWidth = false,
-      placement = 'bottom-start',
+      placement = "bottom-start",
       centered = false,
       onEscapeKeyDown,
       onPointerDownOutside,
@@ -61,14 +74,14 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
       onFocusOutside,
       ...props
     },
-    forwardedRef,
+    forwardedRef
   ) => {
     const [content, setContent] = React.useState<HTMLDivElement | null>(null);
     const [width, setWidth] = React.useState<number | undefined>(undefined);
     const isRightClickOutsideRef = React.useRef(false);
     const { x, y, refs, strategy } = useFloating({
-      strategy: 'fixed',
-      placement: centered ? 'bottom' : placement,
+      strategy: "fixed",
+      placement: centered ? "bottom" : placement,
       middleware: [
         offset({
           mainAxis: spacing,
@@ -99,19 +112,24 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
       const close = () => {
         handleDismiss();
       };
-      window.addEventListener('blur', close);
-      window.addEventListener('resize', close);
+      window.addEventListener("blur", close);
+      window.addEventListener("resize", close);
 
       return () => {
-        window.removeEventListener('blur', close);
-        window.removeEventListener('resize', close);
+        window.removeEventListener("blur", close);
+        window.removeEventListener("resize", close);
       };
     }, [handleDismiss]);
 
-    const composedRefs = useComposedRefs<HTMLDivElement>(forwardedRef, (node) => setContent(node), refs.setFloating);
+    const composedRefs = useComposedRefs<HTMLDivElement>(
+      forwardedRef,
+      (node) => setContent(node),
+      refs.setFloating
+    );
 
     return (
       <RemoveScroll allowPinchZoom>
+        {/* @ts-ignore */}
         <FocusScope
           asChild
           loop
@@ -121,9 +139,11 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
           onUnmountAutoFocus={(event) => {
             event.preventDefault();
 
-            if (!isRightClickOutsideRef.current) source.current?.focus({ preventScroll: true });
+            if (!isRightClickOutsideRef.current)
+              source.current?.focus({ preventScroll: true });
           }}
         >
+          {/* @ts-ignore */}
           <DismissibleLayer
             asChild
             onEscapeKeyDown={onEscapeKeyDown}
@@ -131,18 +151,24 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
               onPointerDownOutside,
               (event) => {
                 const originalEvent = event.detail.originalEvent;
-                const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
-                const isRightClick = originalEvent.button === 2 || ctrlLeftClick;
+                const ctrlLeftClick =
+                  originalEvent.button === 0 && originalEvent.ctrlKey === true;
+                const isRightClick =
+                  originalEvent.button === 2 || ctrlLeftClick;
 
                 isRightClickOutsideRef.current = isRightClick;
               },
-              { checkForDefaultPrevented: false },
+              { checkForDefaultPrevented: false }
             )}
             // When focus is trapped, a `focusout` event may still happen.
             // We make sure we don't trigger our `onDismiss` in such case.
-            onFocusOutside={composeEventHandlers(onFocusOutside, (event) => event.preventDefault(), {
-              checkForDefaultPrevented: false,
-            })}
+            onFocusOutside={composeEventHandlers(
+              onFocusOutside,
+              (event) => event.preventDefault(),
+              {
+                checkForDefaultPrevented: false,
+              }
+            )}
             onDismiss={onDismiss}
           >
             <PopoverWrapper
@@ -164,15 +190,20 @@ export const Content = React.forwardRef<HTMLDivElement, ContentProps>(
         </FocusScope>
       </RemoveScroll>
     );
-  },
+  }
 );
 
-export interface ScrollingProps extends BoxProps<'div'> {
+export interface ScrollingProps extends BoxProps<"div"> {
   intersectionId?: string;
   onReachEnd?: (entry: IntersectionObserverEntry) => void;
 }
 
-export const Scrolling = ({ children, intersectionId, onReachEnd, ...props }: ScrollingProps) => {
+export const Scrolling = ({
+  children,
+  intersectionId,
+  onReachEnd,
+  ...props
+}: ScrollingProps) => {
   const popoverRef = React.useRef<HTMLDivElement>(null!);
 
   const generatedIntersectionId = useId();
@@ -185,7 +216,11 @@ export const Scrolling = ({ children, intersectionId, onReachEnd, ...props }: Sc
     <PopoverScrollable ref={popoverRef} {...props}>
       {children}
       {intersectionId && onReachEnd && (
-        <Box id={stripReactIdOfColon(generatedIntersectionId)} width="100%" height="1px" />
+        <Box
+          id={stripReactIdOfColon(generatedIntersectionId)}
+          width="100%"
+          height="1px"
+        />
       )}
     </PopoverScrollable>
   );
@@ -216,14 +251,14 @@ const PopoverScrollable = styled(Box)`
 export type PopoverProps = ScrollingProps &
   Pick<
     ContentProps,
-    | 'source'
-    | 'spacing'
-    | 'fullWidth'
-    | 'placement'
-    | 'centered'
-    | 'onEscapeKeyDown'
-    | 'onPointerDownOutside'
-    | 'onDismiss'
+    | "source"
+    | "spacing"
+    | "fullWidth"
+    | "placement"
+    | "centered"
+    | "onEscapeKeyDown"
+    | "onPointerDownOutside"
+    | "onDismiss"
   >;
 
 export const Popover = ({

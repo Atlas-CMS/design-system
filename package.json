@@ -1,14 +1,14 @@
 {
   "name": "design-system",
   "version": "1.0.0",
-  "description": "This is going to contain loads of utilities to incrementally replace Strapi Design system with Mantine equivalents",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "peerDependencies": {
+  "description": "",
+  "dependencies": {
     "@casl/ability": "6.5.0",
     "@codemirror/lang-json": "^6.0.1",
     "@floating-ui/react-dom": "^2.0.2",
@@ -48,7 +48,7 @@
     "@tiptap/react": "2.9.1",
     "@tiptap/starter-kit": "2.9.1",
     "@types/node-sass": "4.11.8",
-    "@types/styled-components": "^5.3.3",
+    "@types/styled-components": "^5.1.34",
     "@uiw/react-codemirror": "^4.21.19",
     "aria-hidden": "^1.2.3",
     "axios": "1.5.0",
@@ -146,5 +146,17 @@
     "webpack-dev-server": "^4.15.0",
     "webpackbar": "^5.0.2",
     "yup": "0.32.9"
+  },
+  "devDependencies": {
+    "@strapi/admin-test-utils": "^4.14.5",
+    "@testing-library/dom": "9.2.0",
+    "@testing-library/react": "14.0.0",
+    "@testing-library/user-event": "14.4.3",
+    "@types/node-sass": "4.11.8",
+    "duplicate-dependencies-webpack-plugin": "^1.0.2",
+    "glob": "8.0.3",
+    "msw": "1.3.0",
+    "speed-measure-webpack-plugin": "1.5.0",
+    "webpack-bundle-analyzer": "^4.9.0"
   }
 }

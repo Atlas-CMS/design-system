@@ -1,16 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { DismissibleLayer } from '../DismissibleLayer';
-import { Flex } from '../Flex';
-import { FocusTrap } from '../FocusTrap';
-import { setOpacity } from '../helpers/setOpacity';
-import { useId } from '../hooks/useId';
-import useLockScroll from '../hooks/useLockScroll';
-import { Portal } from '../Portal';
-import { Typography } from '../Typography';
+import { Box, BoxProps } from "../Box";
+import { DismissibleLayer } from "../DismissibleLayer";
+import { Flex } from "../Flex";
+import { FocusTrap } from "../FocusTrap";
+import { setOpacity } from "../helpers/setOpacity";
+import { useId } from "../hooks/useId";
+import useLockScroll from "../hooks/useLockScroll";
+import { Portal } from "../Portal";
+import { Typography } from "../Typography";
 
 const DialogWrapper = styled(Box)`
   inset: 0;
@@ -34,7 +34,14 @@ export interface DialogProps extends BoxProps {
   isOpen: boolean;
 }
 
-export const Dialog = ({ onClose, title, as = 'h2', isOpen, id, ...props }: DialogProps) => {
+export const Dialog = ({
+  onClose,
+  title,
+  as = "h2",
+  isOpen,
+  id,
+  ...props
+}: DialogProps) => {
   const generatedId = useId(id);
 
   useLockScroll(isOpen);
@@ -49,7 +56,11 @@ export const Dialog = ({ onClose, title, as = 'h2', isOpen, id, ...props }: Dial
     <Portal>
       <DialogWrapper padding={8} position="fixed" zIndex={4}>
         <FocusTrap>
-          <DismissibleLayer onEscapeKeyDown={onClose} onPointerDownOutside={onClose}>
+          {/* @ts-ignore */}
+          <DismissibleLayer
+            onEscapeKeyDown={onClose}
+            onPointerDownOutside={onClose}
+          >
             <DialogContainer
               aria-labelledby={labelledBy}
               aria-modal

@@ -1,12 +1,12 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { ModalContext } from './ModalContext';
-import { Box, BoxProps } from '../Box';
-import { DismissibleLayer } from '../DismissibleLayer';
-import { Flex } from '../Flex';
-import { FocusTrap } from '../FocusTrap';
-import useLockScroll from '../hooks/useLockScroll';
-import { Portal } from '../Portal';
+import { ModalContext } from "./ModalContext";
+import { Box, BoxProps } from "../Box";
+import { DismissibleLayer } from "../DismissibleLayer";
+import { Flex } from "../Flex";
+import { FocusTrap } from "../FocusTrap";
+import useLockScroll from "../hooks/useLockScroll";
+import { Portal } from "../Portal";
 
 export interface ModalLayoutProps extends BoxProps {
   labelledBy: string;
@@ -18,7 +18,11 @@ const ModalWrapper = styled(Flex)`
   inset: 0;
 `;
 
-export const ModalLayout = ({ onClose, labelledBy, ...props }: ModalLayoutProps) => {
+export const ModalLayout = ({
+  onClose,
+  labelledBy,
+  ...props
+}: ModalLayoutProps) => {
   useLockScroll(true);
 
   return (
@@ -32,7 +36,11 @@ export const ModalLayout = ({ onClose, labelledBy, ...props }: ModalLayoutProps)
           zIndex={4}
         >
           <FocusTrap>
-            <DismissibleLayer onEscapeKeyDown={onClose} onPointerDownOutside={onClose}>
+            {/* @ts-ignore */}
+            <DismissibleLayer
+              onEscapeKeyDown={onClose}
+              onPointerDownOutside={onClose}
+            >
               <Box
                 aria-labelledby={labelledBy}
                 aria-modal

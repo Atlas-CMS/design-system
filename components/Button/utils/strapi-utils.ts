@@ -1,5 +1,5 @@
-import { Typography } from '@atlas/design-system';
-import { DefaultTheme } from 'styled-components';
+import { Typography } from "../../";
+import { DefaultTheme } from "styled-components";
 import {
   LIGHT_VARIANTS,
   SUCCESS_LIGHT,
@@ -12,19 +12,25 @@ import {
   DANGER,
   GHOST,
   Variant,
-} from '../constants';
+} from "../constants";
 
 export const getVariantColorName = (
   variant: Variant
-): 'success' | 'danger' | 'neutral' | 'primary' => {
+): "success" | "danger" | "neutral" | "primary" => {
   if (variant === SUCCESS_LIGHT || variant === DANGER_LIGHT) {
-    return `${variant.substring(0, variant.lastIndexOf('-'))}` as 'success' | 'danger';
+    return `${variant.substring(0, variant.lastIndexOf("-"))}` as
+      | "success"
+      | "danger";
   }
   if (variant === TERTIARY) {
-    return 'neutral';
+    return "neutral";
   }
-  if (variant === DEFAULT || variant === SECONDARY || VARIANTS.every((vari) => vari !== variant)) {
-    return 'primary';
+  if (
+    variant === DEFAULT ||
+    variant === SECONDARY ||
+    VARIANTS.every((vari) => vari !== variant)
+  ) {
+    return "primary";
   }
 
   // @ts-expect-error ghost is a variant, but ghostXXX is not any color...
@@ -46,7 +52,13 @@ export const getDisabledStyle = ({ theme }: { theme: DefaultTheme }) => {
   `;
 };
 
-export const getHoverStyle = ({ theme, variant }: { theme: DefaultTheme; variant: Variant }) => {
+export const getHoverStyle = ({
+  theme,
+  variant,
+}: {
+  theme: DefaultTheme;
+  variant: Variant;
+}) => {
   if ([...LIGHT_VARIANTS, SECONDARY].includes(variant)) {
     return `
       background-color: ${theme.colors.neutral0};
@@ -77,7 +89,13 @@ export const getHoverStyle = ({ theme, variant }: { theme: DefaultTheme; variant
   `;
 };
 
-export const getActiveStyle = ({ theme, variant }: { theme: DefaultTheme; variant: Variant }) => {
+export const getActiveStyle = ({
+  theme,
+  variant,
+}: {
+  theme: DefaultTheme;
+  variant: Variant;
+}) => {
   if ([...LIGHT_VARIANTS, SECONDARY].includes(variant)) {
     return `
       background-color: ${theme.colors.neutral0};
@@ -104,13 +122,21 @@ export const getActiveStyle = ({ theme, variant }: { theme: DefaultTheme; varian
   `;
 };
 
-export const getVariantStyle = ({ theme, variant }: { theme: DefaultTheme; variant: Variant }) => {
+export const getVariantStyle = ({
+  theme,
+  variant,
+}: {
+  theme: DefaultTheme;
+  variant: Variant;
+}) => {
   switch (variant) {
     case DANGER_LIGHT:
     case SUCCESS_LIGHT:
     case SECONDARY: {
       return `
-          border: 1px solid ${theme.colors[`${getVariantColorName(variant)}200`]};
+          border: 1px solid ${
+            theme.colors[`${getVariantColorName(variant)}200`]
+          };
           background: ${theme.colors[`${getVariantColorName(variant)}100`]};
           ${Typography} {
             color: ${theme.colors[`${getVariantColorName(variant)}700`]};
@@ -155,7 +181,9 @@ export const getVariantStyle = ({ theme, variant }: { theme: DefaultTheme; varia
     case SUCCESS:
     case DANGER: {
       return `
-          border: 1px solid ${theme.colors[`${getVariantColorName(variant)}600`]};
+          border: 1px solid ${
+            theme.colors[`${getVariantColorName(variant)}600`]
+          };
           background: ${theme.colors[`${getVariantColorName(variant)}600`]};
           ${Typography} {
             color: ${theme.colors.neutral0};

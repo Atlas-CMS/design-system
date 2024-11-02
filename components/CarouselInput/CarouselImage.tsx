@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { Tooltip } from '../Tooltip';
-import { ellipsisStyle } from '@atlas/design-system/components/_Typography/utils';
+import { ellipsisStyle } from "../_Typography/utils";
+import { Box, BoxProps } from "../Box";
+import { Tooltip } from "../Tooltip";
 
-export interface CarouselImageProps extends BoxProps<'img'> {
+export interface CarouselImageProps extends BoxProps<"img"> {
   alt: string;
   src: string;
 }
@@ -24,13 +24,19 @@ export const CarouselImage = (props: CarouselImageProps) => {
 
   if (isError) {
     return (
-      <Tooltip description={props.alt ?? ''}>
+      <Tooltip description={props.alt ?? ""}>
         <StyledImage as="img" height="100%" maxWidth="100%" {...props} />
       </Tooltip>
     );
   }
 
   return (
-    <StyledImage as="img" height="100%" maxWidth="100%" {...props} onError={handleImageError} />
+    <StyledImage
+      as="img"
+      height="100%"
+      maxWidth="100%"
+      {...props}
+      onError={handleImageError}
+    />
   );
 };

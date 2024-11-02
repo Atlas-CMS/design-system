@@ -1,42 +1,50 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { CarretDown, Cross } from '@strapi/icons';
-import { Combobox as ComboboxPrimitive } from '@strapi/ui-primitives';
-import styled from 'styled-components';
+import { CarretDown, Cross } from "@strapi/icons";
+import { Combobox as ComboboxPrimitive } from "@strapi/ui-primitives";
+import styled from "styled-components";
 
-import { Box } from '../Box';
-import { Field, FieldError, FieldHint, FieldLabel, FieldLabelProps, FieldProps } from '../Field';
-import { Flex } from '../Flex';
-import { stripReactIdOfColon } from '../helpers/strings';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { useControllableState } from '../hooks/useControllableState';
-import { useId } from '../hooks/useId';
-import { useIntersection } from '../hooks/useIntersection';
-import { Loader } from '../Loader';
-import { getThemeSize, inputFocusStyle } from '../themes';
-import { Typography } from '../Typography';
+import { Box } from "../Box";
+import {
+  Field,
+  FieldError,
+  FieldHint,
+  FieldLabel,
+  FieldLabelProps,
+  FieldProps,
+} from "../Field";
+import { Flex } from "../Flex";
+import { stripReactIdOfColon } from "../helpers/strings";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { useControllableState } from "../hooks/useControllableState";
+import { useId } from "../hooks/useId";
+import { useIntersection } from "../hooks/useIntersection";
+import { Loader } from "../Loader";
+import { getThemeSize, inputFocusStyle } from "../themes";
+import { Typography } from "../Typography";
 
 /* -------------------------------------------------------------------------------------------------
  * ComboboxInput
  * -----------------------------------------------------------------------------------------------*/
 
+// @ts-ignore
 export interface ComboboxInputProps
   extends Pick<
       ComboboxPrimitive.RootProps,
-      | 'allowCustomValue'
-      | 'value'
-      | 'autocomplete'
-      | 'textValue'
-      | 'disabled'
-      | 'defaultTextValue'
-      | 'required'
-      | 'disabled'
-      | 'isPrintableCharacter'
+      | "allowCustomValue"
+      | "value"
+      | "autocomplete"
+      | "textValue"
+      | "disabled"
+      | "defaultTextValue"
+      | "required"
+      | "disabled"
+      | "isPrintableCharacter"
     >,
-    Pick<FieldProps, 'error' | 'id'>,
+    Pick<FieldProps, "error" | "id">,
     Omit<
       ComboboxPrimitive.TextInputProps,
-      'required' | 'disabled' | 'value' | 'onChange' | 'size'
+      "required" | "disabled" | "value" | "onChange" | "size"
     > {
   children: React.ReactNode;
   className?: string;
@@ -53,7 +61,11 @@ export interface ComboboxInputProps
   loadingMessage?: string;
   noOptionsMessage?: (inputValue: string) => string;
   onChange?: (value?: string) => void;
-  onClear?: (event: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>) => void;
+  onClear?: (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.MouseEvent<HTMLDivElement>
+  ) => void;
   onCreateOption?: (inputValue: string) => void;
   onFilterValueChange?: (filterValue?: string) => void;
   onInputChange?: React.ChangeEventHandler<HTMLInputElement>;
@@ -61,20 +73,23 @@ export interface ComboboxInputProps
   onOpenChange?: (open?: boolean) => void;
   onTextValueChange?: (textValue?: string) => void;
   placeholder?: string;
-  size?: 'S' | 'M';
+  size?: "S" | "M";
   startIcon?: React.ReactNode;
 }
 
 export type ComboboxInputElement = HTMLInputElement;
 
-export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInputProps>(
+export const ComboboxInput = React.forwardRef<
+  ComboboxInputElement,
+  ComboboxInputProps
+>(
   (
     {
       allowCustomValue,
       autocomplete,
       children,
       className,
-      clearLabel = 'clear',
+      clearLabel = "clear",
       creatable = false,
       createMessage = (value) => `Create "${value}"`,
       defaultFilterValue,
@@ -89,8 +104,8 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
       id,
       isPrintableCharacter,
       loading = false,
-      loadingMessage = 'Loading content...',
-      noOptionsMessage = () => 'No results found',
+      loadingMessage = "Loading content...",
+      noOptionsMessage = () => "No results found",
       onChange,
       onClear,
       onCreateOption,
@@ -98,9 +113,9 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
       onInputChange,
       onTextValueChange,
       onLoadMore,
-      placeholder = 'Select or enter a value',
+      placeholder = "Select or enter a value",
       required = false,
-      size = 'M',
+      size = "M",
       startIcon,
       textValue,
       value,
@@ -115,7 +130,8 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
     });
     const [internalTextValue, setInternalTextValue] = useControllableState({
       prop: textValue,
-      defaultProp: allowCustomValue && !defaultTextValue ? value : defaultTextValue,
+      defaultProp:
+        allowCustomValue && !defaultTextValue ? value : defaultTextValue,
       onChange: onTextValueChange,
     });
     const [internalFilterValue, setInternalFilterValue] = useControllableState({
@@ -139,34 +155,40 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
       e: React.MouseEvent<HTMLButtonElement> | React.MouseEvent<HTMLDivElement>
     ) => {
       if (onClear && !disabled) {
-        setInternalTextValue('');
-        setInternalFilterValue('');
+        setInternalTextValue("");
+        setInternalFilterValue("");
         onClear(e);
         triggerRef.current.focus();
       }
     };
 
-    const handleOpenChange: ComboboxPrimitive.RootProps['onOpenChange'] = (open) => {
+    const handleOpenChange: ComboboxPrimitive.RootProps["onOpenChange"] = (
+      open
+    ) => {
       setInternalIsOpen(open);
     };
 
-    const handleTextValueChange: ComboboxPrimitive.RootProps['onTextValueChange'] = (textValue) => {
-      setInternalTextValue(textValue);
-    };
+    const handleTextValueChange: ComboboxPrimitive.RootProps["onTextValueChange"] =
+      (textValue) => {
+        setInternalTextValue(textValue);
+      };
 
-    const handleFilterValueChange: ComboboxPrimitive.RootProps['onFilterValueChange'] = (
-      filterValue
+    const handleFilterValueChange: ComboboxPrimitive.RootProps["onFilterValueChange"] =
+      (filterValue) => {
+        setInternalFilterValue(filterValue);
+      };
+
+    const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (
+      e: any
     ) => {
-      setInternalFilterValue(filterValue);
-    };
-
-    const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e: any) => {
       if (onInputChange) {
         onInputChange(e);
       }
     };
 
-    const handleChange: ComboboxPrimitive.RootProps['onValueChange'] = (value) => {
+    const handleChange: ComboboxPrimitive.RootProps["onValueChange"] = (
+      value
+    ) => {
       if (onChange) {
         onChange(value);
       }
@@ -186,7 +208,9 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
 
     const generatedId = useId(id);
     const generatedIntersectionId = useId();
-    const intersectionId = `intersection-${stripReactIdOfColon(generatedIntersectionId)}`;
+    const intersectionId = `intersection-${stripReactIdOfColon(
+      generatedIntersectionId
+    )}`;
 
     useIntersection(viewportRef, handleReachEnd, {
       selectorToWatch: `#${intersectionId}`,
@@ -202,7 +226,7 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
 
     return (
       <ComboboxPrimitive.Root
-        autocomplete={autocomplete || (creatable ? 'list' : 'both')}
+        autocomplete={autocomplete || (creatable ? "list" : "both")}
         onOpenChange={handleOpenChange}
         open={internalIsOpen}
         onTextValueChange={handleTextValueChange}
@@ -259,27 +283,42 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
             <Viewport ref={viewportRef}>
               {children}
               {creatable ? (
-                <ComboboxPrimitive.CreateItem
-                  onPointerUp={handleCreateItemClick}
-                  onClick={handleCreateItemClick}
-                  asChild
-                >
+                <>
                   {/* @ts-ignore */}
-                  <OptionBox>
-                    <Typography>{createMessage(internalTextValue ?? '')}</Typography>
-                  </OptionBox>
-                </ComboboxPrimitive.CreateItem>
+                  <ComboboxPrimitive.CreateItem
+                    onPointerUp={handleCreateItemClick}
+                    onClick={handleCreateItemClick}
+                    asChild
+                  >
+                    {/* @ts-ignore */}
+                    <OptionBox>
+                      <Typography>
+                        {createMessage(internalTextValue ?? "")}
+                      </Typography>
+                    </OptionBox>
+                  </ComboboxPrimitive.CreateItem>
+                </>
               ) : null}
               {!creatable && !loading ? (
-                <ComboboxPrimitive.NoValueFound asChild>
+                <>
                   {/* @ts-ignore */}
-                  <OptionBox $hasHover={false}>
-                    <Typography>{noOptionsMessage(internalTextValue ?? '')}</Typography>
-                  </OptionBox>
-                </ComboboxPrimitive.NoValueFound>
+                  <ComboboxPrimitive.NoValueFound asChild>
+                    {/* @ts-ignore */}
+                    <OptionBox $hasHover={false}>
+                      <Typography>
+                        {noOptionsMessage(internalTextValue ?? "")}
+                      </Typography>
+                    </OptionBox>
+                  </ComboboxPrimitive.NoValueFound>
+                </>
               ) : null}
               {loading ? (
-                <Flex justifyContent="center" alignItems="center" paddingTop={2} paddingBottom={2}>
+                <Flex
+                  justifyContent="center"
+                  alignItems="center"
+                  paddingTop={2}
+                  paddingBottom={2}
+                >
                   <Loader small>{loadingMessage}</Loader>
                 </Flex>
               ) : null}
@@ -296,16 +335,21 @@ export const ComboboxInput = React.forwardRef<ComboboxInputElement, ComboboxInpu
  * Combobox
  * -----------------------------------------------------------------------------------------------*/
 
-interface ComboboxPropsWithoutLabel extends ComboboxInputProps, Pick<FieldProps, 'hint'> {
-  labelAction?: FieldLabelProps['action'];
+interface ComboboxPropsWithoutLabel
+  extends ComboboxInputProps,
+    Pick<FieldProps, "hint"> {
+  labelAction?: FieldLabelProps["action"];
 }
 
 export type ComboboxProps =
-  | (ComboboxPropsWithoutLabel & { label: string; 'aria-label'?: never })
-  | (ComboboxPropsWithoutLabel & { label?: never; 'aria-label': string });
+  | (ComboboxPropsWithoutLabel & { label: string; "aria-label"?: never })
+  | (ComboboxPropsWithoutLabel & { label?: never; "aria-label": string });
 
 export const Combobox = React.forwardRef<ComboboxInputElement, ComboboxProps>(
-  ({ error, hint, id, label, labelAction, required = false, ...restProps }, forwardedRef) => {
+  (
+    { error, hint, id, label, labelAction, required = false, ...restProps },
+    forwardedRef
+  ) => {
     const generatedId = useId(id);
 
     return (
@@ -331,12 +375,21 @@ export const Combobox = React.forwardRef<ComboboxInputElement, ComboboxProps>(
  * CreatableCombobox
  * -----------------------------------------------------------------------------------------------*/
 
-type CreatableComboboxPropsWithoutLabel = Omit<ComboboxPropsWithoutLabel, 'onCreateOption'> &
-  Required<Pick<ComboboxPropsWithoutLabel, 'onCreateOption'>>;
+type CreatableComboboxPropsWithoutLabel = Omit<
+  ComboboxPropsWithoutLabel,
+  "onCreateOption"
+> &
+  Required<Pick<ComboboxPropsWithoutLabel, "onCreateOption">>;
 
 export type CreatableComboboxProps =
-  | (CreatableComboboxPropsWithoutLabel & { label: string; 'aria-label'?: never })
-  | (CreatableComboboxPropsWithoutLabel & { label?: never; 'aria-label': string });
+  | (CreatableComboboxPropsWithoutLabel & {
+      label: string;
+      "aria-label"?: never;
+    })
+  | (CreatableComboboxPropsWithoutLabel & {
+      label?: never;
+      "aria-label": string;
+    });
 
 export const CreatableCombobox = (props: CreatableComboboxProps) => (
   <Combobox {...props} creatable />
@@ -357,13 +410,15 @@ const IconBox = styled(Box)`
 
 interface TriggerProps {
   $hasError: boolean;
-  $size: 'S' | 'M';
+  $size: "S" | "M";
 }
 
+// @ts-ignore
 const Trigger = styled(ComboboxPrimitive.Trigger)<TriggerProps>`
   position: relative;
   border: 1px solid
-    ${({ theme, $hasError }) => ($hasError ? theme.colors.danger600 : theme.colors.neutral200)};
+    ${({ theme, $hasError }) =>
+      $hasError ? theme.colors.danger600 : theme.colors.neutral200};
   padding-right: ${({ theme }) => theme.spaces[3]};
   padding-left: ${({ theme }) => theme.spaces[3]};
   border-radius: ${({ theme }) => theme.borderRadius};
@@ -373,7 +428,8 @@ const Trigger = styled(ComboboxPrimitive.Trigger)<TriggerProps>`
   align-items: center;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spaces[4]};
-  min-height: ${({ theme, $size }) => getThemeSize('input')({ theme, size: $size })};
+  min-height: ${({ theme, $size }) =>
+    getThemeSize("input")({ theme, size: $size })};
 
   &[data-disabled] {
     color: ${({ theme }) => theme.colors.neutral600};
@@ -386,9 +442,11 @@ const Trigger = styled(ComboboxPrimitive.Trigger)<TriggerProps>`
     outline: none;
   }
 
-  ${({ theme, $hasError }) => inputFocusStyle()({ theme, hasError: $hasError })};
+  ${({ theme, $hasError }) =>
+    inputFocusStyle()({ theme, hasError: $hasError })};
 `;
 
+// @ts-ignore
 const TextInput = styled(ComboboxPrimitive.TextInput)`
   width: 100%;
   font-size: ${14 / 16}rem;
@@ -401,11 +459,11 @@ const TextInput = styled(ComboboxPrimitive.TextInput)`
     outline: none;
   }
 
-  &[aria-disabled='true'] {
+  &[aria-disabled="true"] {
     cursor: inherit;
   }
 `;
-
+// @ts-ignore
 const DownIcon = styled(ComboboxPrimitive.Icon)`
   & > svg {
     width: ${6 / 16}rem;
@@ -415,11 +473,11 @@ const DownIcon = styled(ComboboxPrimitive.Icon)`
     }
   }
 
-  &[aria-disabled='true'] {
+  &[aria-disabled="true"] {
     cursor: inherit;
   }
 `;
-
+// @ts-ignore
 const Content = styled(ComboboxPrimitive.Content)`
   background: ${({ theme }) => theme.colors.neutral0};
   box-shadow: ${({ theme }) => theme.shadows.filterShadow};
@@ -430,7 +488,7 @@ const Content = styled(ComboboxPrimitive.Content)`
   max-height: 15rem;
   z-index: ${({ theme }) => theme.zIndices[1]};
 `;
-
+// @ts-ignore
 const Viewport = styled(ComboboxPrimitive.Viewport)`
   padding: ${({ theme }) => theme.spaces[1]};
 `;
@@ -446,6 +504,7 @@ export interface ComboboxOptionProps extends ComboboxPrimitive.ItemProps {
 export const Option = React.forwardRef<HTMLDivElement, ComboboxOptionProps>(
   ({ children, value, disabled, textValue, ...props }, ref) => {
     return (
+      // @ts-ignore
       <ComboboxPrimitive.ComboboxItem
         asChild
         value={value}
@@ -454,6 +513,7 @@ export const Option = React.forwardRef<HTMLDivElement, ComboboxOptionProps>(
       >
         {/* @ts-ignore */}
         <OptionBox ref={ref} {...props}>
+          {/* @ts-ignore */}
           <ComboboxPrimitive.ItemText asChild>
             <Typography>{children}</Typography>
           </ComboboxPrimitive.ItemText>
@@ -473,7 +533,7 @@ export const OptionBox = styled.div<{ $hasHover?: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius};
   user-select: none;
 
-  &[data-state='checked'] {
+  &[data-state="checked"] {
     background-color: ${({ theme }) => theme.colors.primary100};
 
     ${Typography} {

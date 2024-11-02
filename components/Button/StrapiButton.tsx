@@ -1,12 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import { Loader } from '@strapi/icons';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes } from "styled-components";
+import { Loader } from "@strapi/icons";
 
-import { getDisabledStyle, getHoverStyle, getActiveStyle, getVariantStyle } from './utils';
-import { BUTTON_SIZES, Variant, ButtonSizes, DEFAULT } from './constants';
-import { Typography, Flex, Box } from '@atlas/design-system';
-import { BaseButton, BaseButtonProps } from '../BaseButton';
+import {
+  getDisabledStyle,
+  getHoverStyle,
+  getActiveStyle,
+  getVariantStyle,
+} from "./utils";
+import { BUTTON_SIZES, Variant, ButtonSizes, DEFAULT } from "./constants";
+import { BaseButton, BaseButtonProps } from "../BaseButton";
+import { Typography, Flex, Box } from "../";
 
 const rotation = keyframes`
   from {
@@ -22,7 +27,9 @@ const LoaderAnimated = styled(Loader)`
   will-change: transform;
 `;
 
-export const ButtonWrapper = styled(BaseButton)<Required<Pick<ButtonProps, 'size' | 'variant'>>>`
+export const ButtonWrapper = styled(BaseButton)<
+  Required<Pick<ButtonProps, "size" | "variant">>
+>`
   height: ${({ theme, size }) => theme.sizes.button[size]};
 
   svg {
@@ -30,7 +37,7 @@ export const ButtonWrapper = styled(BaseButton)<Required<Pick<ButtonProps, 'size
     width: auto;
   }
 
-  &[aria-disabled='true'] {
+  &[aria-disabled="true"] {
     ${getDisabledStyle}
 
     &:active {
@@ -77,7 +84,9 @@ export const StrapiButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const isDisabled = disabled || loading;
 
-    const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e: any) => {
+    const handleClick: React.MouseEventHandler<HTMLButtonElement> = (
+      e: any
+    ) => {
       if (!isDisabled && onClick) {
         onClick(e);
       }
@@ -97,10 +106,10 @@ export const StrapiButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         borderColor="buttonPrimary600"
         gap={2}
         inline={fullWidth}
-        justifyContent={fullWidth ? 'center' : undefined}
+        justifyContent={fullWidth ? "center" : undefined}
         paddingLeft={4}
         paddingRight={4}
-        width={fullWidth ? '100%' : undefined}
+        width={fullWidth ? "100%" : undefined}
         {...props}
       >
         {(startIcon || loading) && (
@@ -108,7 +117,7 @@ export const StrapiButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
 
         <Typography
-          variant={size === 'S' ? 'pi' : undefined}
+          variant={size === "S" ? "pi" : undefined}
           fontWeight="bold"
           textColor="buttonNeutral0"
         >
@@ -121,4 +130,4 @@ export const StrapiButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-StrapiButton.displayName = 'Button';
+StrapiButton.displayName = "Button";

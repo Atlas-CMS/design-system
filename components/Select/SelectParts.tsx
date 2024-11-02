@@ -1,20 +1,20 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { CarretDown, Cross } from '@strapi/icons';
-import { Select } from '@strapi/ui-primitives';
-import styled, { css } from 'styled-components';
+import { CarretDown, Cross } from "@strapi/icons";
+import { Select } from "@strapi/ui-primitives";
+import styled, { css } from "styled-components";
 
-import { Box, BoxProps } from '../Box';
-import { Flex } from '../Flex';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { getThemeSize, inputFocusStyle } from '../themes';
-import { Typography, TypographyProps } from '../Typography';
+import { Box, BoxProps } from "../Box";
+import { Flex } from "../Flex";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { getThemeSize, inputFocusStyle } from "../themes";
+import { Typography, TypographyProps } from "../Typography";
 
 /* -------------------------------------------------------------------------------------------------
  * SelectTrigger
  * -----------------------------------------------------------------------------------------------*/
 
-interface TriggerProps extends BoxProps<'div'> {
+interface TriggerProps extends BoxProps<"div"> {
   /**
    * @default "Clear"
    */
@@ -26,14 +26,28 @@ interface TriggerProps extends BoxProps<'div'> {
   /**
    * @default "M"
    */
-  size?: 'S' | 'M';
+  size?: "S" | "M";
 }
 
 const SelectTrigger = React.forwardRef<HTMLDivElement, TriggerProps>(
-  ({ onClear, clearLabel = 'Clear', startIcon, disabled, hasError, size = 'M', children, ...restProps }, ref) => {
+  (
+    {
+      onClear,
+      clearLabel = "Clear",
+      startIcon,
+      disabled,
+      hasError,
+      size = "M",
+      children,
+      ...restProps
+    },
+    ref
+  ) => {
     const triggerRef = React.useRef<HTMLSpanElement>(null!);
 
-    const handleClearClick = (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => {
+    const handleClearClick = (
+      e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>
+    ) => {
       if (onClear && !disabled) {
         onClear(e);
         triggerRef.current.focus();
@@ -43,6 +57,7 @@ const SelectTrigger = React.forwardRef<HTMLDivElement, TriggerProps>(
     const composedRefs = useComposedRefs(triggerRef, ref);
 
     return (
+      // @ts-ignore
       <Select.Trigger asChild>
         <StyledTrigger
           aria-disabled={disabled}
@@ -54,7 +69,7 @@ const SelectTrigger = React.forwardRef<HTMLDivElement, TriggerProps>(
           position="relative"
           overflow="hidden"
           hasRadius
-          background={disabled ? 'neutral150' : 'neutral0'}
+          background={disabled ? "neutral150" : "neutral0"}
           paddingLeft={3}
           paddingRight={3}
           gap={4}
@@ -95,7 +110,7 @@ const SelectTrigger = React.forwardRef<HTMLDivElement, TriggerProps>(
         </StyledTrigger>
       </Select.Trigger>
     );
-  },
+  }
 );
 
 const IconBox = styled(Box)`
@@ -113,14 +128,17 @@ const IconBox = styled(Box)`
 
 interface StyledTriggerProps {
   $hasError: boolean;
-  $size: Required<TriggerProps>['size'];
+  $size: Required<TriggerProps>["size"];
 }
 
 const StyledTrigger = styled(Flex)<StyledTriggerProps>`
-  border: 1px solid ${({ theme, $hasError }) => ($hasError ? theme.colors.danger600 : theme.colors.neutral200)};
-  min-height: ${({ theme, $size }) => getThemeSize('input')({ theme, size: $size })};
+  border: 1px solid
+    ${({ theme, $hasError }) =>
+      $hasError ? theme.colors.danger600 : theme.colors.neutral200};
+  min-height: ${({ theme, $size }) =>
+    getThemeSize("input")({ theme, size: $size })};
 
-  &[aria-disabled='true'] {
+  &[aria-disabled="true"] {
     color: ${(props) => props.theme.colors.neutral600};
   }
 
@@ -129,9 +147,11 @@ const StyledTrigger = styled(Flex)<StyledTriggerProps>`
     outline: none;
   }
 
-  ${({ theme, $hasError }) => inputFocusStyle()({ theme, hasError: $hasError })};
+  ${({ theme, $hasError }) =>
+    inputFocusStyle()({ theme, hasError: $hasError })};
 `;
 
+// @ts-ignore
 const DownIcon = styled(Select.Icon)`
   & > svg {
     width: ${6 / 16}rem;
@@ -147,21 +167,23 @@ const DownIcon = styled(Select.Icon)`
  * -----------------------------------------------------------------------------------------------*/
 
 interface ValueProps
-  extends Omit<TypographyProps, 'children' | 'placeholder'>,
-    Pick<Select.SelectValueProps, 'placeholder' | 'children'> {
+  extends Omit<TypographyProps, "children" | "placeholder">,
+    Pick<Select.SelectValueProps, "placeholder" | "children"> {
   asChild?: boolean;
 }
 
-const SelectValue = React.forwardRef<HTMLSpanElement, ValueProps>(({ children, placeholder, ...restProps }, ref) => (
-  <ValueType ref={ref} ellipsis {...restProps}>
-    <StyledValue placeholder={placeholder}>{children}</StyledValue>
-  </ValueType>
-));
+const SelectValue = React.forwardRef<HTMLSpanElement, ValueProps>(
+  ({ children, placeholder, ...restProps }, ref) => (
+    <ValueType ref={ref} ellipsis {...restProps}>
+      <StyledValue placeholder={placeholder}>{children}</StyledValue>
+    </ValueType>
+  )
+);
 
 const ValueType = styled(Typography)`
   flex: 1;
 `;
-
+// @ts-ignore
 const StyledValue = styled(Select.Value)`
   display: flex;
   gap: ${({ theme }) => theme.spaces[1]};
@@ -171,7 +193,7 @@ const StyledValue = styled(Select.Value)`
 /* -------------------------------------------------------------------------------------------------
  * SelectContent
  * -----------------------------------------------------------------------------------------------*/
-
+// @ts-ignore
 const SelectContent = styled(Select.Content)`
   background: ${({ theme }) => theme.colors.neutral0};
   box-shadow: ${({ theme }) => theme.shadows.filterShadow};
@@ -187,6 +209,7 @@ const SelectContent = styled(Select.Content)`
  * SelectViewport
  * -----------------------------------------------------------------------------------------------*/
 
+// @ts-ignore
 const SelectViewport = styled(Select.Viewport)`
   padding: ${({ theme }) => theme.spaces[1]};
 `;
@@ -222,6 +245,7 @@ const itemStyles = css`
   }
 `;
 
+// @ts-ignore
 const StyledSelectItem = styled(Select.Item)`
   ${itemStyles}
 
@@ -229,7 +253,7 @@ const StyledSelectItem = styled(Select.Item)`
     background-color: ${({ theme }) => theme.colors.primary100};
   }
 
-  &[data-state='checked'] {
+  &[data-state="checked"] {
     ${Typography} {
       font-weight: bold;
       color: ${({ theme }) => theme.colors.primary600};
@@ -259,7 +283,18 @@ type ItemTextProps = Select.SelectItemTextProps;
 type GroupProps = Select.SelectGroupProps;
 type ValueRenderFn = Select.SelectValueRenderFn;
 
-export { Root, Trigger, Value, Portal, Content, Viewport, Item, ItemIndicator, ItemText, Group };
+export {
+  Root,
+  Trigger,
+  Value,
+  Portal,
+  Content,
+  Viewport,
+  Item,
+  ItemIndicator,
+  ItemText,
+  Group,
+};
 export type {
   SingleSelectProps,
   MultiSelectProps,

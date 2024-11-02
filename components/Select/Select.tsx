@@ -1,7 +1,7 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { MultiSelect, MultiSelectProps } from './MultiSelect';
-import { SingleSelect, SingleSelectProps } from './SingleSelect';
+import { MultiSelect, MultiSelectProps } from "./MultiSelect";
+import { SingleSelect, SingleSelectProps } from "./SingleSelect";
 
 export type SelectProps =
   | (SingleSelectProps & { multi?: never; withTags?: never })
@@ -15,7 +15,7 @@ export const useSelectContext = () => React.useContext(SelectContext);
  * @preserve
  * @deprecated You should import the specific type of select you want to render
  *
- * e.g. `import { MultiSelect } from '@atlas/design-system';`
+ * e.g. `import { MultiSelect } from '#atlas/design-system';`
  */
 export const Select = (props: SelectProps) => {
   const contextValue = React.useMemo(
@@ -25,7 +25,11 @@ export const Select = (props: SelectProps) => {
 
   return (
     <SelectContext.Provider value={contextValue}>
-      {props.multi || props.withTags ? <MultiSelect {...props} /> : <SingleSelect {...props} />}
+      {props.multi || props.withTags ? (
+        <MultiSelect {...props} />
+      ) : (
+        <SingleSelect {...props} />
+      )}
     </SelectContext.Provider>
   );
 };

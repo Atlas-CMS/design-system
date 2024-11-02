@@ -1,30 +1,44 @@
 /* eslint-disable no-nested-ternary */
-import * as React from 'react';
+import * as React from "react";
 
-import { Cross } from '@strapi/icons';
-import styled, { css } from 'styled-components';
+import { Cross } from "@strapi/icons";
+import styled, { css } from "styled-components";
 
-import * as SelectParts from './SelectParts';
-import checkmarkIcon from '../BaseCheckbox/assets/checkmark.svg';
-import { Box } from '../Box';
-import { Field, FieldError, FieldHint, FieldLabel, FieldLabelProps, FieldProps } from '../Field';
-import { Flex } from '../Flex';
-import { stripReactIdOfColon } from '../helpers/strings';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { useId } from '../hooks/useId';
-import { useIntersection } from '../hooks/useIntersection';
-import { Tag } from '../Tag';
-import { Typography } from '../Typography';
+import * as SelectParts from "./SelectParts";
+import checkmarkIcon from "../BaseCheckbox/assets/checkmark.svg";
+import { Box } from "../Box";
+import {
+  Field,
+  FieldError,
+  FieldHint,
+  FieldLabel,
+  FieldLabelProps,
+  FieldProps,
+} from "../Field";
+import { Flex } from "../Flex";
+import { stripReactIdOfColon } from "../helpers/strings";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { useId } from "../hooks/useId";
+import { useIntersection } from "../hooks/useIntersection";
+import { Tag } from "../Tag";
+import { Typography } from "../Typography";
 
-type MultiSelectPropsWithoutLabel = Omit<SelectParts.MultiSelectProps, 'value' | 'multi'> &
-  Pick<SelectParts.ContentProps, 'onCloseAutoFocus'> &
-  Pick<SelectParts.TriggerProps, 'clearLabel' | 'onClear' | 'size' | 'startIcon' | 'placeholder'> &
-  Pick<FieldProps, 'hint' | 'id' | 'error'> & {
+type MultiSelectPropsWithoutLabel = Omit<
+  SelectParts.MultiSelectProps,
+  "value" | "multi"
+> &
+  Pick<SelectParts.ContentProps, "onCloseAutoFocus"> &
+  Pick<
+    SelectParts.TriggerProps,
+    // @ts-ignore
+    "clearLabel" | "onClear" | "size" | "startIcon" | "placeholder"
+  > &
+  Pick<FieldProps, "hint" | "id" | "error"> & {
     /**
      * @default (value) => value.join(',')
      */
     customizeContent?(value?: string[]): string;
-    labelAction?: FieldLabelProps['action'];
+    labelAction?: FieldLabelProps["action"];
     onChange?: (value: string[]) => void;
     onReachEnd?: (entry: IntersectionObserverEntry) => void;
     /**
@@ -38,15 +52,15 @@ type MultiSelectPropsWithoutLabel = Omit<SelectParts.MultiSelectProps, 'value' |
   };
 
 export type MultiSelectProps =
-  | (MultiSelectPropsWithoutLabel & { label: string; 'aria-label'?: never })
-  | (MultiSelectPropsWithoutLabel & { 'aria-label': string; label?: never });
+  | (MultiSelectPropsWithoutLabel & { label: string; "aria-label"?: never })
+  | (MultiSelectPropsWithoutLabel & { "aria-label": string; label?: never });
 
 export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
   (
     {
-      'aria-label': ariaLabel,
+      "aria-label": ariaLabel,
       children,
-      clearLabel = 'Clear',
+      clearLabel = "Clear",
       customizeContent,
       disabled,
       error,
@@ -62,7 +76,7 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       required,
       selectButtonTitle: _deprecatedSelectButtonTitle,
       startIcon,
-      size = 'M',
+      size = "M",
       value: passedValue,
       withTags,
       ...restProps
@@ -110,7 +124,9 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
       }
     };
 
-    const handleOpenChange: SelectParts.SelectProps['onOpenChange'] = (open) => {
+    const handleOpenChange: SelectParts.SelectProps["onOpenChange"] = (
+      open
+    ) => {
       setInternalIsOpen(open);
     };
 
@@ -125,7 +141,9 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     };
 
     const generatedIntersectionId = useId();
-    const intersectionId = `intersection-${stripReactIdOfColon(generatedIntersectionId)}`;
+    const intersectionId = `intersection-${stripReactIdOfColon(
+      generatedIntersectionId
+    )}`;
 
     const handleReachEnd = (entry: IntersectionObserverEntry) => {
       if (onReachEnd) {
@@ -143,12 +161,14 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
     });
 
     const value =
-      typeof passedValue !== 'undefined' && passedValue !== null ? passedValue : internalValue;
+      typeof passedValue !== "undefined" && passedValue !== null
+        ? passedValue
+        : internalValue;
 
     const renderTags: SelectParts.ValueRenderFn = (
       arg?: { value?: string; textValue?: string } | string
     ) => {
-      if (arg && typeof arg === 'object' && arg.value) {
+      if (arg && typeof arg === "object" && arg.value) {
         return (
           <Tag
             tabIndex={-1}
@@ -198,8 +218,9 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
               paddingLeft={withTags && value?.length ? 1 : 3}
             >
               <SelectParts.Value
+                // @ts-ignore
                 placeholder={placeholder}
-                textColor={value?.length ? 'neutral800' : 'neutral600'}
+                textColor={value?.length ? "neutral800" : "neutral600"}
               >
                 {value?.length
                   ? withTags
@@ -235,41 +256,46 @@ export const MultiSelect = React.forwardRef<HTMLDivElement, MultiSelectProps>(
  * MultiSelectOption
  * -----------------------------------------------------------------------------------------------*/
 
-export interface MultiSelectOptionProps extends Omit<SelectParts.ItemProps, 'value'> {
+export interface MultiSelectOptionProps
+  extends Omit<SelectParts.ItemProps, "value"> {
   startIcon?: React.ReactNode;
   value: string | number;
 }
 
-export const MultiSelectOption = React.forwardRef<HTMLDivElement, MultiSelectOptionProps>(
-  ({ value, children, startIcon, ...restProps }, ref) => {
-    return (
-      <SelectParts.Item ref={ref} value={value.toString()} {...restProps}>
-        {startIcon && (
-          <Box as="span" aria-hidden>
-            {startIcon}
-          </Box>
+export const MultiSelectOption = React.forwardRef<
+  HTMLDivElement,
+  MultiSelectOptionProps
+>(({ value, children, startIcon, ...restProps }, ref) => {
+  return (
+    // @ts-ignore
+    <SelectParts.Item ref={ref} value={value.toString()} {...restProps}>
+      {startIcon && (
+        <Box as="span" aria-hidden>
+          {startIcon}
+        </Box>
+      )}
+      {/* @ts-ignore */}
+      <SelectParts.ItemIndicator>
+        {({ isSelected, isIntermediate }) => (
+          <CheckMark
+            hasRadius
+            overflow="hidden"
+            position="relative"
+            $indeterminate={isIntermediate}
+            $selected={isSelected}
+            zIndex={1}
+            height="18px"
+            width="18px"
+          />
         )}
-        <SelectParts.ItemIndicator>
-          {({ isSelected, isIntermediate }) => (
-            <CheckMark
-              hasRadius
-              overflow="hidden"
-              position="relative"
-              $indeterminate={isIntermediate}
-              $selected={isSelected}
-              zIndex={1}
-              height="18px"
-              width="18px"
-            />
-          )}
-        </SelectParts.ItemIndicator>
-        <Typography textColor="neutral800">
-          <SelectParts.ItemText>{children}</SelectParts.ItemText>
-        </Typography>
-      </SelectParts.Item>
-    );
-  }
-);
+      </SelectParts.ItemIndicator>
+      <Typography textColor="neutral800">
+        {/* @ts-ignore */}
+        <SelectParts.ItemText>{children}</SelectParts.ItemText>
+      </Typography>
+    </SelectParts.Item>
+  );
+});
 
 interface CheckMarkProps {
   $selected?: boolean;
@@ -279,15 +305,19 @@ interface CheckMarkProps {
 const CheckMark = styled(Box)<CheckMarkProps>`
   border: 1px solid
     ${({ theme, $selected, $indeterminate }) =>
-      $selected || $indeterminate ? theme.colors.primary600 : theme.colors.neutral300};
+      $selected || $indeterminate
+        ? theme.colors.primary600
+        : theme.colors.neutral300};
   background-color: ${({ theme, $selected, $indeterminate }) =>
-    $selected || $indeterminate ? theme.colors.primary600 : theme.colors.neutral0};
+    $selected || $indeterminate
+      ? theme.colors.primary600
+      : theme.colors.neutral0};
 
   ${({ theme, $indeterminate }) =>
     $indeterminate &&
     css`
       &::after {
-        content: '';
+        content: "";
         display: block;
         position: relative;
         color: white;
@@ -304,7 +334,7 @@ const CheckMark = styled(Box)<CheckMarkProps>`
     $selected &&
     css`
       &::after {
-        content: '';
+        content: "";
         background: url(${
             // @ts-ignore
             checkmarkIcon
@@ -321,40 +351,47 @@ const CheckMark = styled(Box)<CheckMarkProps>`
  * MultiSelectGroup
  * -----------------------------------------------------------------------------------------------*/
 
-export interface MultiSelectGroupProps extends Pick<MultiSelectOptionProps, 'startIcon'> {
+export interface MultiSelectGroupProps
+  extends Pick<MultiSelectOptionProps, "startIcon"> {
   children: React.ReactNode;
   label: string;
   values?: string[];
 }
 
-export const MultiSelectGroup = React.forwardRef<HTMLDivElement, MultiSelectGroupProps>(
-  ({ children, label, startIcon, values = [], ...restProps }, ref) => {
-    return (
-      <SelectParts.Group ref={ref}>
-        <SelectParts.Item value={values} {...restProps}>
-          {startIcon && (
-            <Box as="span" aria-hidden>
-              {startIcon}
-            </Box>
+export const MultiSelectGroup = React.forwardRef<
+  HTMLDivElement,
+  MultiSelectGroupProps
+>(({ children, label, startIcon, values = [], ...restProps }, ref) => {
+  return (
+    // @ts-ignore
+    <SelectParts.Group ref={ref}>
+      <SelectParts.Item value={values} {...restProps}>
+        {startIcon && (
+          <Box as="span" aria-hidden>
+            {startIcon}
+          </Box>
+        )}
+        {/* @ts-ignore */}
+        <SelectParts.ItemIndicator>
+          {({ isSelected, isIntermediate }) => (
+            <CheckMark
+              hasRadius
+              overflow="hidden"
+              position="relative"
+              $indeterminate={isIntermediate}
+              $selected={isSelected}
+              zIndex={1}
+              height="18px"
+              width="18px"
+            />
           )}
-          <SelectParts.ItemIndicator>
-            {({ isSelected, isIntermediate }) => (
-              <CheckMark
-                hasRadius
-                overflow="hidden"
-                position="relative"
-                $indeterminate={isIntermediate}
-                $selected={isSelected}
-                zIndex={1}
-                height="18px"
-                width="18px"
-              />
-            )}
-          </SelectParts.ItemIndicator>
-          <Typography textColor="neutral800">{label}</Typography>
-        </SelectParts.Item>
+        </SelectParts.ItemIndicator>
+        <Typography textColor="neutral800">{label}</Typography>
+      </SelectParts.Item>
+      <>
+        {/* @ts-ignore */}
         {children}
-      </SelectParts.Group>
-    );
-  }
-);
+      </>
+    </SelectParts.Group>
+  );
+});

@@ -1,6 +1,6 @@
-import { MultiSelectOption, MultiSelectOptionProps } from './MultiSelect';
-import { useSelectContext } from './Select';
-import { SingleSelectOption, SingleSelectOptionProps } from './SingleSelect';
+import { MultiSelectOption, MultiSelectOptionProps } from "./MultiSelect";
+import { useSelectContext } from "./Select";
+import { SingleSelectOption, SingleSelectOptionProps } from "./SingleSelect";
 
 export type OptionProps =
   | (SingleSelectOptionProps & { multi?: never })
@@ -9,7 +9,7 @@ export type OptionProps =
 /**
  * @preserve
  * @deprecated You should import the specific type of option you want to render,
- * e.g. `import { MultiSelectOption } from '@atlas/design-system';`
+ * e.g. `import { MultiSelectOption } from '#atlas/design-system';`
  */
 export const Option = ({ multi, ...restProps }: OptionProps) => {
   const context = useSelectContext();

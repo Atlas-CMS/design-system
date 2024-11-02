@@ -1,13 +1,22 @@
-import * as React from 'react';
+import * as React from "react";
 
-import { Information, CheckCircle, ExclamationMarkCircle, Cross } from '@strapi/icons';
-import styled from 'styled-components';
+import {
+  Information,
+  CheckCircle,
+  ExclamationMarkCircle,
+  Cross,
+} from "@strapi/icons";
+import styled from "styled-components";
 
-import { handleBackgroundColor, handleBorderColor, handleIconColor } from './utils';
-import { Box, BoxProps } from '../Box';
-import { Flex } from '../Flex';
-import { buttonFocusStyle } from '../themes/utils';
-import { Typography } from '../Typography';
+import {
+  handleBackgroundColor,
+  handleBorderColor,
+  handleIconColor,
+} from "./utils";
+import { Box, BoxProps } from "../Box";
+import { Flex } from "../Flex";
+import { buttonFocusStyle } from "../themes/utils";
+import { Typography } from "../Typography";
 
 const CloseButton = styled(Box)`
   svg {
@@ -38,14 +47,17 @@ interface AlertIconProps extends React.SVGProps<SVGSVGElement> {
 }
 
 const AlertIcon = ({ variant, ...props }: AlertIconProps) => {
-  if (variant === 'success') {
+  if (variant === "success") {
+    // @ts-ignore
     return <CheckCircle {...props} />;
   }
 
-  if (variant === 'danger' || variant === 'warning') {
+  if (variant === "danger" || variant === "warning") {
+    // @ts-ignore
     return <ExclamationMarkCircle {...props} />;
   }
 
+  // @ts-ignore
   return <Information {...props} />;
 };
 
@@ -59,7 +71,7 @@ const ActionBox = styled(Box)`
   }
 `;
 
-export type AlertVariant = 'success' | 'danger' | 'default' | 'warning';
+export type AlertVariant = "success" | "danger" | "default" | "warning";
 
 export interface AlertProps extends BoxProps {
   /**
@@ -95,10 +107,10 @@ export interface AlertProps extends BoxProps {
 export const Alert = ({
   title,
   children,
-  variant = 'default',
+  variant = "default",
   onClose,
   closeLabel,
-  titleAs = 'p',
+  titleAs = "p",
   action,
   ...props
 }: AlertProps) => {
@@ -115,7 +127,12 @@ export const Alert = ({
       variant={variant}
       {...props}
     >
-      <AlertIconWrapper height={`${20 / 16}rem`} shrink={0} variant={variant} width={`${20 / 16}rem`}>
+      <AlertIconWrapper
+        height={`${20 / 16}rem`}
+        shrink={0}
+        variant={variant}
+        width={`${20 / 16}rem`}
+      >
         <AlertIcon aria-hidden variant={variant} />
       </AlertIconWrapper>
 
@@ -123,7 +140,7 @@ export const Alert = ({
         alignItems="start"
         gap={action ? 2 : 1}
         wrap="wrap"
-        role={variant === 'danger' ? 'alert' : 'status'}
+        role={variant === "danger" ? "alert" : "status"}
         width="100%"
       >
         {title && (

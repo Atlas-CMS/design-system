@@ -1,24 +1,38 @@
-import * as React from 'react';
+import * as React from "react";
 
-import * as SelectParts from './SelectParts';
-import { Box } from '../Box';
-import { Field, FieldError, FieldHint, FieldLabel, FieldLabelProps, FieldProps } from '../Field';
-import { Flex } from '../Flex';
-import { stripReactIdOfColon } from '../helpers/strings';
-import { useComposedRefs } from '../hooks/useComposeRefs';
-import { useId } from '../hooks/useId';
-import { useIntersection } from '../hooks/useIntersection';
-import { Typography } from '../Typography';
+import * as SelectParts from "./SelectParts";
+import { Box } from "../Box";
+import {
+  Field,
+  FieldError,
+  FieldHint,
+  FieldLabel,
+  FieldLabelProps,
+  FieldProps,
+} from "../Field";
+import { Flex } from "../Flex";
+import { stripReactIdOfColon } from "../helpers/strings";
+import { useComposedRefs } from "../hooks/useComposeRefs";
+import { useId } from "../hooks/useId";
+import { useIntersection } from "../hooks/useIntersection";
+import { Typography } from "../Typography";
 
-type SingleSelectPropsWithoutLabel = Omit<SelectParts.SingleSelectProps, 'value'> &
-  Pick<SelectParts.ContentProps, 'onCloseAutoFocus'> &
-  Pick<SelectParts.TriggerProps, 'clearLabel' | 'onClear' | 'size' | 'startIcon' | 'placeholder'> &
-  Pick<FieldProps, 'error' | 'hint' | 'id'> & {
+type SingleSelectPropsWithoutLabel = Omit<
+  SelectParts.SingleSelectProps,
+  "value"
+> &
+  Pick<SelectParts.ContentProps, "onCloseAutoFocus"> &
+  Pick<
+    SelectParts.TriggerProps,
+    // @ts-ignore
+    "clearLabel" | "onClear" | "size" | "startIcon" | "placeholder"
+  > &
+  Pick<FieldProps, "error" | "hint" | "id"> & {
     /**
      * @default (value) => value.toString()
      */
     customizeContent?(value?: string | number): string;
-    labelAction?: FieldLabelProps['action'];
+    labelAction?: FieldLabelProps["action"];
     onChange?: (value: string | number) => void;
     onReachEnd?: (entry: IntersectionObserverEntry) => void;
     /**
@@ -31,12 +45,15 @@ type SingleSelectPropsWithoutLabel = Omit<SelectParts.SingleSelectProps, 'value'
   };
 
 export type SingleSelectProps =
-  | (SingleSelectPropsWithoutLabel & { label: string; 'aria-label'?: never })
-  | (SingleSelectPropsWithoutLabel & { 'aria-label': string; label?: never });
+  | (SingleSelectPropsWithoutLabel & { label: string; "aria-label"?: never })
+  | (SingleSelectPropsWithoutLabel & { "aria-label": string; label?: never });
 
 export type SingleSelectElement = SingleSelectInputElement;
 
-export const SingleSelect = React.forwardRef<SingleSelectInputElement, SingleSelectProps>(
+export const SingleSelect = React.forwardRef<
+  SingleSelectInputElement,
+  SingleSelectProps
+>(
   (
     {
       error,
@@ -87,21 +104,24 @@ export const SingleSelect = React.forwardRef<SingleSelectInputElement, SingleSel
 );
 
 export interface SingleSelectInputProps
-  extends Omit<SingleSelectPropsWithoutLabel, 'labelAction' | 'hint' | 'id'> {
-  'aria-label'?: string;
+  extends Omit<SingleSelectPropsWithoutLabel, "labelAction" | "hint" | "id"> {
+  "aria-label"?: string;
   id?: string;
   label?: string;
 }
 
 export type SingleSelectInputElement = HTMLDivElement;
 
-export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, SingleSelectInputProps>(
+export const SingleSelectInput = React.forwardRef<
+  SingleSelectInputElement,
+  SingleSelectInputProps
+>(
   (
     {
-      'aria-label': ariaLabel,
+      "aria-label": ariaLabel,
       id,
       children,
-      clearLabel = 'Clear',
+      clearLabel = "Clear",
       customizeContent,
       disabled,
       error,
@@ -114,7 +134,7 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
       required,
       selectButtonTitle: _deprecatedSelectButtonTitle,
       startIcon,
-      size = 'M',
+      size = "M",
       value: passedValue,
       ...restProps
     },
@@ -127,7 +147,9 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
     const [internalValue, setInternalValue] = React.useState<string>();
     const [internalIsOpen, setInternalIsOpen] = React.useState(false);
 
-    const handleOpenChange: SelectParts.SelectProps['onOpenChange'] = (open) => {
+    const handleOpenChange: SelectParts.SelectProps["onOpenChange"] = (
+      open
+    ) => {
       setInternalIsOpen(open);
     };
 
@@ -137,7 +159,7 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
       }
 
       if (!onChange) {
-        setInternalValue('');
+        setInternalValue("");
       }
     };
 
@@ -150,7 +172,7 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
        * both setting our copy of the internal value.
        */
       if (onChange) {
-        const shouldBeNumber = typeof passedValue === 'number';
+        const shouldBeNumber = typeof passedValue === "number";
         onChange(shouldBeNumber ? Number(value) : value);
       } else {
         setInternalValue(value);
@@ -159,7 +181,9 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
 
     const viewportRef = React.useRef<HTMLDivElement>(null);
     const generatedIntersectionId = useId();
-    const intersectionId = `intersection-${stripReactIdOfColon(generatedIntersectionId)}`;
+    const intersectionId = `intersection-${stripReactIdOfColon(
+      generatedIntersectionId
+    )}`;
 
     const handleReachEnd = (entry: IntersectionObserverEntry) => {
       if (onReachEnd) {
@@ -177,9 +201,9 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
     });
 
     const value =
-      (typeof passedValue !== 'undefined' && passedValue !== null
+      (typeof passedValue !== "undefined" && passedValue !== null
         ? passedValue.toString()
-        : internalValue) ?? '';
+        : internalValue) ?? "";
 
     return (
       <SelectParts.Root
@@ -203,14 +227,19 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
           onClear={value && onClear ? handleOnClear : undefined}
         >
           <SelectParts.Value
+            // @ts-ignore
             placeholder={placeholder}
-            textColor={value ? 'neutral800' : 'neutral600'}
+            textColor={value ? "neutral800" : "neutral600"}
           >
             {value && customizeContent ? customizeContent(value) : undefined}
           </SelectParts.Value>
         </SelectParts.Trigger>
         <SelectParts.Portal>
-          <SelectParts.Content position="popper" sideOffset={4} onCloseAutoFocus={onCloseAutoFocus}>
+          <SelectParts.Content
+            position="popper"
+            sideOffset={4}
+            onCloseAutoFocus={onCloseAutoFocus}
+          >
             <SelectParts.Viewport ref={viewportRef}>
               {children}
               <Box id={intersectionId} width="100%" height="1px" />
@@ -226,24 +255,27 @@ export const SingleSelectInput = React.forwardRef<SingleSelectInputElement, Sing
  * SingleSelectOption
  * -----------------------------------------------------------------------------------------------*/
 
-export interface SingleSelectOptionProps extends Omit<SelectParts.ItemProps, 'value'> {
+export interface SingleSelectOptionProps
+  extends Omit<SelectParts.ItemProps, "value"> {
   startIcon?: React.ReactNode;
   value: string | number;
 }
 
-export const SingleSelectOption = React.forwardRef<HTMLDivElement, SingleSelectOptionProps>(
-  ({ value, startIcon, children, ...restProps }, ref) => {
-    return (
-      <SelectParts.Item ref={ref} value={value.toString()} {...restProps}>
-        {startIcon && (
-          <Box as="span" aria-hidden>
-            {startIcon}
-          </Box>
-        )}
-        <Typography textColor="neutral800">
-          <SelectParts.ItemText>{children}</SelectParts.ItemText>
-        </Typography>
-      </SelectParts.Item>
-    );
-  }
-);
+export const SingleSelectOption = React.forwardRef<
+  HTMLDivElement,
+  SingleSelectOptionProps
+>(({ value, startIcon, children, ...restProps }, ref) => {
+  return (
+    <SelectParts.Item ref={ref} value={value.toString()} {...restProps}>
+      {startIcon && (
+        <Box as="span" aria-hidden>
+          {startIcon}
+        </Box>
+      )}
+      <Typography textColor="neutral800">
+        {/* @ts-ignore */}
+        <SelectParts.ItemText>{children}</SelectParts.ItemText>
+      </Typography>
+    </SelectParts.Item>
+  );
+});

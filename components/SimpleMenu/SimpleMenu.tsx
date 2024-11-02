@@ -1,20 +1,26 @@
-import React, { useRef, useState, Children, cloneElement, useEffect } from 'react';
+import React, {
+  useRef,
+  useState,
+  Children,
+  cloneElement,
+  useEffect,
+} from "react";
 
-import { Placement } from '@floating-ui/react-dom';
-import { CarretDown } from '@strapi/icons';
-import { useCallbackRef } from '@strapi/ui-primitives';
-import { NavLink, NavLinkProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { Placement } from "@floating-ui/react-dom";
+import { CarretDown } from "@strapi/icons";
+import { useCallbackRef } from "@strapi/ui-primitives";
+import { NavLink, NavLinkProps } from "react-router-dom";
+import styled from "styled-components";
 
-import { getOptionStyle } from './utils';
-import { Box } from '../Box';
-import { Button } from '../Button';
-import { Flex } from '../Flex';
-import { KeyboardKeys } from '../helpers/keyboardKeys';
-import { useId } from '../hooks/useId';
-import { Link } from '../Link';
-import { Popover } from '../Popover';
-import { Typography } from '../Typography';
+import { getOptionStyle } from "./utils";
+import { Box } from "../Box";
+import { Button } from "../Button";
+import { Flex } from "../Flex";
+import { KeyboardKeys } from "../helpers/keyboardKeys";
+import { useId } from "../hooks/useId";
+import { Link } from "../Link";
+import { Popover } from "../Popover";
+import { Typography } from "../Typography";
 
 const OptionButton = styled.button`
   border: none;
@@ -24,6 +30,7 @@ const OptionButton = styled.button`
   ${getOptionStyle}
 `;
 
+// @ts-ignore
 const OptionLink = styled(NavLink)`
   text-decoration: none;
   ${getOptionStyle}
@@ -60,7 +67,8 @@ const StyledButtonSmall = styled(Button)`
   padding: ${({ theme }) => `${theme.spaces[1]} ${theme.spaces[3]}`};
 `;
 
-export interface MenuItemProps extends Omit<NavLinkProps, 'to'> {
+// @ts-ignore
+export interface MenuItemProps extends Omit<NavLinkProps, "to"> {
   as?: React.ElementType;
   children: React.ReactNode;
   href?: string;
@@ -89,7 +97,7 @@ export const MenuItem = ({
   const menuItemProps = {
     tabIndex: isFocused ? 0 : -1,
     ref: menuItemRef,
-    role: 'menuitem',
+    role: "menuitem",
     ...props,
   };
 
@@ -120,7 +128,12 @@ export const MenuItem = ({
   }
 
   return (
-    <OptionButton onKeyDown={handleKeyDown} onMouseDown={onClick} type="button" {...menuItemProps}>
+    <OptionButton
+      onKeyDown={handleKeyDown}
+      onMouseDown={onClick}
+      type="button"
+      {...menuItemProps}
+    >
       <Box padding={2}>
         <Typography>{children}</Typography>
       </Box>
@@ -128,36 +141,37 @@ export const MenuItem = ({
   );
 };
 
-export type SimpleMenuProps<As extends React.ElementType = React.ElementType> = Omit<
-  React.ComponentPropsWithoutRef<As>,
-  | 'as'
-  | 'children'
-  | 'id'
-  | 'label'
-  | 'onClose'
-  | 'onOpen'
-  | 'onReachEnd'
-  | 'popoverPlacement'
-  | 'size'
-> & {
-  as?: As;
-  children: React.ReactNode;
-  id?: string;
-  label: React.ReactElement | string | number;
-  onClose?: () => void;
-  onOpen?: () => void;
-  /**
-   * Callback function to be called when the popover reaches the end of the scrollable content
-   */
-  onReachEnd?: () => void;
-  popoverPlacement?: Placement;
-  /**
-   * Size of the trigger button.
-   * Note: in case a custom component is passed through the "as"
-   * prop, the size prop is passed along too, but needs to be handled there
-   */
-  size?: 'S' | 'M';
-};
+export type SimpleMenuProps<As extends React.ElementType = React.ElementType> =
+  Omit<
+    React.ComponentPropsWithoutRef<As>,
+    | "as"
+    | "children"
+    | "id"
+    | "label"
+    | "onClose"
+    | "onOpen"
+    | "onReachEnd"
+    | "popoverPlacement"
+    | "size"
+  > & {
+    as?: As;
+    children: React.ReactNode;
+    id?: string;
+    label: React.ReactElement | string | number;
+    onClose?: () => void;
+    onOpen?: () => void;
+    /**
+     * Callback function to be called when the popover reaches the end of the scrollable content
+     */
+    onReachEnd?: () => void;
+    popoverPlacement?: Placement;
+    /**
+     * Size of the trigger button.
+     * Note: in case a custom component is passed through the "as"
+     * prop, the size prop is passed along too, but needs to be handled there
+     */
+    size?: "S" | "M";
+  };
 
 export const SimpleMenu = <As extends React.ElementType = typeof Button>({
   label,
@@ -166,26 +180,27 @@ export const SimpleMenu = <As extends React.ElementType = typeof Button>({
   as: asComp,
   onOpen = () => {},
   onClose = () => {},
-  size = 'M',
-  popoverPlacement = 'bottom-start',
+  size = "M",
+  popoverPlacement = "bottom-start",
   onReachEnd,
   ...props
 }: SimpleMenuProps<As>) => {
-  const menuButtonRef: React.ComponentProps<As>['ref'] = useRef(undefined!);
+  const menuButtonRef: React.ComponentProps<As>["ref"] = useRef(undefined!);
   const menuId = useId(id);
   const didMount = useRef(false);
   const [visible, setVisible] = useState(false);
   const [focusedItemIndex, setFocusItem] = useState(0);
   const childrenArray = Children.toArray(children);
-  const DefaultComponent = size === 'S' ? StyledButtonSmall : Button;
+  const DefaultComponent = size === "S" ? StyledButtonSmall : Button;
   const Component = asComp || DefaultComponent;
-  const shouldHandleReachEnd = !!onReachEnd && typeof onReachEnd === 'function';
+  const shouldHandleReachEnd = !!onReachEnd && typeof onReachEnd === "function";
 
   useEffect(() => {
-    if (['string', 'number'].includes(typeof label)) {
+    if (["string", "number"].includes(typeof label)) {
       // Useful to focus the selected item in the list
       const defaultItemIndexToFocus = childrenArray.findIndex(
-        (c) => (React.isValidElement(c) && c.props.children === label) || c === label
+        (c) =>
+          (React.isValidElement(c) && c.props.children === label) || c === label
       );
 
       if (defaultItemIndexToFocus !== -1) {
@@ -228,11 +243,15 @@ export const SimpleMenu = <As extends React.ElementType = typeof Button>({
       }
 
       if (e.key === KeyboardKeys.DOWN) {
-        setFocusItem((prev) => (prev === childrenArray.length - 1 ? 0 : prev + 1));
+        setFocusItem((prev) =>
+          prev === childrenArray.length - 1 ? 0 : prev + 1
+        );
       }
 
       if (e.key === KeyboardKeys.UP) {
-        setFocusItem((prev) => (prev === 0 ? childrenArray.length - 1 : prev - 1));
+        setFocusItem((prev) =>
+          prev === 0 ? childrenArray.length - 1 : prev - 1
+        );
       }
     }
   };
@@ -308,7 +327,9 @@ export const SimpleMenu = <As extends React.ElementType = typeof Button>({
           placement={popoverPlacement}
           source={menuButtonRef}
           onReachEnd={handleReachEnd}
-          intersectionId={shouldHandleReachEnd ? `popover-${menuId}` : undefined}
+          intersectionId={
+            shouldHandleReachEnd ? `popover-${menuId}` : undefined
+          }
           spacing={4}
         >
           <Box role="menu" as="ul" padding={1} id={menuId}>
