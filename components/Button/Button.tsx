@@ -23,7 +23,7 @@ import { mapButtonPropsToMantine } from "./utils";
 
 // Types
 import type { ButtonProps as StrapiButtonProps } from "./StrapiButton";
-import ConditionalWrapper from "src/@iliad/components/ConditionalWrapper";
+import ConditionalWrapper from "@iliad/components/ConditionalWrapper";
 
 export type ButtonProps = ComponentBaseProps & MantineButtonProps & {};
 type _StrapiButtonProps = StrapiButtonProps & {
