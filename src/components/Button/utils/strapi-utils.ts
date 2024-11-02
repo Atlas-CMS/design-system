@@ -1,4 +1,4 @@
-import { Typography } from "../../";
+import { Typography } from "../..";
 import { DefaultTheme } from "styled-components";
 import {
   LIGHT_VARIANTS,

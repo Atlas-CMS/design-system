@@ -15,7 +15,7 @@ import {
 import { mapTypographyPropsToMantine } from "./utils/functions";
 
 // Types
-import type { TypographyProps as StrapiTypographyProps } from "../../components/_Typography";
+import type { TypographyProps as StrapiTypographyProps } from "../_Typography";
 import type { PolymorphEscapeHatch } from "../../types/ads";
 export type TypographyProps = Partial<
   ComponentBaseProps & StrapiTypographyProps & {}

@@ -11,7 +11,7 @@ import {
 } from "./utils";
 import { BUTTON_SIZES, Variant, ButtonSizes, DEFAULT } from "./constants";
 import { BaseButton, BaseButtonProps } from "../BaseButton";
-import { Typography, Flex, Box } from "../";
+import { Typography, Flex, Box } from "..";
 
 const rotation = keyframes`
   from {
