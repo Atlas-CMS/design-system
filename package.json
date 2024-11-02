@@ -4,8 +4,8 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "main": "index.js",
   "scripts": {
+    "addAtlas": "ln -s /Users/owen/Documents/GitHub/@atlas /Users/owen/Documents/GitHub/atlas-strapi-core/node_modules/@atlas",
     "simlink": "ln -s /Users/owen/Documents/GitHub/atlas-strapi-core/node_modules /Users/owen/Documents/GitHub/@atlas/design-system/node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

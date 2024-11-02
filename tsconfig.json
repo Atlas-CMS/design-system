@@ -18,9 +18,9 @@
     "allowJs": true,
     "paths": {
       // Iliad
-      "@iliad/*": ["src/@iliad/*"],
-      "@iliad/hooks/*": ["src/@iliad/utils/hooks/*"],
-      "@iliad/functions/*": ["src/@iliad/functions/hooks/*"]
+      "@iliad/*": ["@iliad/*"],
+      "@iliad/hooks/*": ["@iliad/utils/hooks/*"],
+      "@iliad/functions/*": ["@iliad/functions/hooks/*"]
       // Atlas
       // "@atlas/*": ["@atlas/*"]
     }
@@ -31,20 +31,20 @@
     "custom.d.ts",
 
     // Type Declarations
-    "src/@types/**/*.d.ts",
-    "src/@types/**/*.ts",
-    "src/@types/**/*",
-    "src/@types/*.d.ts",
-    "src/@types/*.ts",
-    "src/@types/*",
+    "@types/**/*.d.ts",
+    "@types/**/*.ts",
+    "@types/**/*",
+    "@types/*.d.ts",
+    "@types/*.ts",
+    "@types/*",
 
     // Iliad Types
-    "src/@iliad/@types/**/*.d.ts",
-    "src/@iliad/@types/**/*.ts",
-    "src/@iliad/@types/**/*",
-    "src/@iliad/@types/*.d.ts",
-    "src/@iliad/@types/*.ts",
-    "src/@iliad/@types/*",
+    "@iliad/@types/**/*.d.ts",
+    "@iliad/@types/**/*.ts",
+    "@iliad/@types/**/*",
+    "@iliad/@types/*.d.ts",
+    "@iliad/@types/*.ts",
+    "@iliad/@types/*",
 
     // Atlas Types
     "@atlas/design-system/@types/**/*.d.ts",
@@ -52,7 +52,16 @@
     "@atlas/design-system/@types/**/*",
     "@atlas/design-system/@types/*.d.ts",
     "@atlas/design-system/@types/*.ts",
-    "@atlas/design-system/@types/*"
+    "@atlas/design-system/@types/*",
+    "components",
+    "config",
+    "context",
+    "hooks",
+    "icons",
+    "types",
+    "utils",
+    "v2",
+    "index.ts"
   ],
   "exclude": ["node_modules"]
 }

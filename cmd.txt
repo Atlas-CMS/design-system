@@ -1,0 +1,5 @@
+CREATE LINKED NODE_MODULES HERE:
+ln -s /Users/owen/Documents/GitHub/atlas-strapi-core/node_modules /Users/owen/Documents/GitHub/@atlas/design-system/node_modules
+
+ADD THIS TO NODE_MODULES:
+ln -s /Users/owen/Documents/GitHub/@atlas /Users/owen/Documents/GitHub/atlas-strapi-core/node_modules/@atlas
